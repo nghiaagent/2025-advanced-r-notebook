@@ -182,7 +182,97 @@ make.names
 
 # Copy-on-modify Exercises
 
-##
+## Ex. 1
+
+Why is `tracemem(1:10)` not useful?
+
+### Answer
+
+```{r}
+cat(tracemem(1:10), "\n")
+cat(tracemem(1:10), "\n")
+cat(tracemem(1:10), "\n")
+cat(tracemem(1:10), "\n")
+```
+The purpose of `tracemem()` is to tag a named object and see when its underlying data structure is copied. `1:10` is not a named object, so `tracemem()` wouldn't be useful.
+
+## Ex. 2
+
+Explain why `tracemem()` shows two copies when you run this code. Hint: carefully look at the difference between this code and the code shown earlier in the section.
+
+```{r}
+x <- c(1L, 2L, 3L)
+tracemem(x)
+
+x[[3]] <- 4
+```
+### Answer
+
+Because `x[[3]]` was replaced with a double. This means the object that x points to was modified (thus copied) twice; first to coerce a integer vector to a double vector, second to replace `x[[3]]` with `4`
+
+```{r}
+x <- c(1L, 2L, 3L)
+lobstr::tree(x)
+
+x[[3]] <- 4
+lobstr::tree(x)
+```
+
+## Ex. 3
+
+Sketch out the relationship between the following objects:
+
+```{r}
+a <- 1:10
+b <- list(a, a)
+c <- list(b, a, 1:10)
+```
+
+### Answer
+
+- `a` points to an ALTREP vector representing `1:10`
+- `b` is a list containing 2 references to the ALTREP vector representing `1:10`
+- `c` is a list containing a reference to `b`, a reference to `a`, and a reference to the ALTREP vector representing `1:10`
+
+```{r}
+tree(a)
+
+tree(b)
+
+tree(c)
+```
+
+
+## Ex. 4
+
+What happens when you run this code?
+
+```{r}
+x <- list(1:10)
+x[[2]] <- x
+```
+
+### Answer
+
+Originally, `x` is a list with a reference to the vector `1:10`
+
+`x`'s underlying list is then copied-on-modify; then the 2nd slot `x[[2]]` is changed to contain the original list object.
+
+Both list slots point to the same vector `1:10`
+
+```{r}
+# First object
+x <- list(1:10)
+str(x)
+tree(x)
+ref(x)
+
+# Second object
+x[[2]] <- x
+str(x)
+tree(x)
+ref(x)
+```
 
 # Object size Exercises
 
