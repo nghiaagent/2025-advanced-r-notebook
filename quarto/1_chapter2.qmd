@@ -1,0 +1,265 @@
+# Chapter 2 {.unnumbered}
+
+```{r setup}
+#| include: FALSE
+
+# Set knitr options
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = TRUE,
+	warning = TRUE
+)
+
+# Declare location
+here::i_am("quarto/1_chapter2.qmd")
+
+# Load packages
+library(pacman)
+
+p_load(
+  lobstr,
+  tidyverse
+)
+```
+
+Questions [here](https://adv-r.hadley.nz/names-values.html)
+
+# Quiz section
+
+## Quiz 1
+
+Given the following data frame, how do I create a new column called "3" that contains the sum of 1 and 2? You may only use `$`, not `[[`. What makes 1, 2, and 3 challenging as variable names?
+
+```{r Quiz 1 Q}
+df <- data.frame(runif(3), runif(3))
+names(df) <- c(1, 2)
+```
+
+
+### Answer
+
+1 and 2 and 3 are challenging as var names since they are non-syntactic names. Though they can still be used (here) via coercing:
+
+```{r Quiz 1 A}
+df$`3` <- df$`1` + df$`2`
+
+head(df)
+
+```
+
+## Quiz 2
+
+In the following code, how much memory does y occupy?
+
+```{r Quiz 2 Q}
+x <- runif(1e6)
+y <- list(x, x, x)
+
+```
+
+### Answer
+
+y takes slightly more memory than x, but not 3 times more (only 80 bytes). This is because y is a list containing 3 references to the 1 vector underlying x. List structure takes up 80 bytes, the vector takes up 8MB.
+
+```{r Quiz 2 A}
+lobstr::obj_size(x)
+lobstr::obj_size(y)
+lobstr::obj_size(y) - lobstr::obj_size(x)
+
+```
+
+## Quiz 3
+
+On which line does a get copied in the following example?
+
+```{r Quiz 3 Q}
+a <- c(1, 5, 3, 2)
+b <- a
+b[[1]] <- 10
+
+```
+
+### Answer
+
+Line 3 of previous block `b[[1]] <- 10`, since that is when `b` is modified and a new vector is created to contain data that b points to.
+
+# Binding basics Exercises
+
+## Ex. 1
+
+Explain the relationship between `a`, `b`, `c`, and `d` in the following code:
+
+```{r Ex 2.2.1}
+# a points to a vector (probably ALTREP)
+a <- 1:10
+
+# b points to the same vector as a 
+b <- a
+
+# c points to the same vector as b, and hence the same as a 
+c <- b
+
+# d points to the same vector as a (since their definition are the same)
+d <- 1:10
+
+# Proof
+lobstr::obj_addr(a)
+lobstr::obj_addr(b)
+lobstr::obj_addr(c)
+lobstr::obj_addr(d)
+
+```
+
+## Ex. 2
+
+The following code accesses the mean function in multiple ways. Do they all point to the same underlying function object? Verify this with `lobstr::obj_addr()`.
+
+```{r eval = FALSE}
+mean
+base::mean
+get("mean")
+evalq(mean)
+match.fun("mean")
+```
+
+### Answer
+All points to the same function
+
+```{r}
+mean |>
+  lobstr::obj_addr()
+
+base::mean |>
+  lobstr::obj_addr()
+
+get("mean") |>
+  lobstr::obj_addr()
+
+evalq(mean) |>
+  lobstr::obj_addr()
+
+match.fun("mean") |>
+  lobstr::obj_addr()
+
+
+```
+
+## Ex. 3
+
+By default, base R data import functions, like `read.csv()`, will automatically convert non-syntactic names to syntactic ones. Why might this be problematic? What option allows you to suppress this behaviour?
+
+### Answer
+
+Because they by default creates factors out of character vectors. This may be problematic if a factor level is completely missing from the imported dataset.
+
+```{r}
+#| eval: false
+?read.csv
+```
+
+Set `as.is = TRUE` for safety.
+
+## Ex. 4
+What rules does `make.names()` use to convert non-syntactic names into syntactic ones?
+
+### Answer
+
+```{r}
+#| eval: false
+?make.names
+```
+
+- Prepend `X` if first character is invalid
+- Translate all invalid characters to `.`
+- Append `.` if name matches R keyword
+- Deduplicate names
+
+The function itself is written in `C`; I don't know how to understand `C` yet.
+
+```{r}
+make.names
+```
+
+# Copy-on-modify Exercises
+
+##
+
+# Object size Exercises
+
+## Ex. 1
+
+In the following example, why are `object.size(y)` and `obj_size(y)` so radically different? Consult the documentation of `object.size()`.
+
+```{r}
+y <- rep(list(runif(1e4)), 100)
+
+object.size(y)
+obj_size(y)
+
+```
+
+### Answer
+
+This is because `object.size(y)` does not take into account the degree of memory sharing in the list.
+
+## Ex. 2
+
+Take the following list. Why is its size somewhat misleading?
+
+```{r}
+funs <- list(mean, sd, var)
+obj_size(funs)
+
+```
+
+### Answer
+
+Because `mean`, `sd`, `var` are base R functions; the list does not contain exact copies, but only references. As in Ex. 1, this would be shown via `object.size()` and `obj_size()`
+
+```{r}
+object.size(funs)
+obj_size(funs)
+
+```
+
+## Ex. 3
+
+Predict the output of the following code:
+
+```{r echo=TRUE}
+a <- runif(1e6)
+
+# This will be 8MB, which is total size of a
+obj_size(a)
+
+b <- list(a, a)
+
+# This will be 8MB, which is mostly size of a 
+obj_size(b)
+
+# This will be 8MB, which is mostly size of a
+obj_size(a, b)
+
+b[[1]][[1]] <- 10
+
+# This will be 16MB, which is mostly size of modified b[[1]] and 
+# unmodified b[[2]] pointing to a
+obj_size(b)
+
+# This will be 16MB, which is mostly size of modified b[[1]] and 
+# unmodified b[[2]] pointing to a
+obj_size(a, b)
+
+b[[2]][[1]] <- 10
+
+# This will be 16MB, which is mostly size of modified b[[1]] and 
+# modified b[[2]]
+obj_size(b)
+
+# This will be 24MB, which is mostly size of a, modified b[[1]], and 
+# modified b[[2]]
+obj_size(a, b)
+
+```
+
+# Modify-in-place Exercises

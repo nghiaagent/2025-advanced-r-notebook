@@ -1,0 +1,22 @@
+# Introduction {.unnumbered}
+
+```{r setup}
+#| include: FALSE
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = TRUE,
+	warning = TRUE
+)
+
+# Declare location
+here::i_am("quarto/index.qmd")
+
+# Install pacman
+if (!requireNamespace("pacman")) {
+  install.packages("pacman")
+}
+
+library(pacman)
+```
+
+This is my code and answers for questions in the Advanced R (2nd edition) [book](https://adv-r.hadley.nz/index.html)

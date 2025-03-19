@@ -1,0 +1,20 @@
+project:
+  type: book
+
+book:
+  title: "Advanced R notebook"
+  author: "Nghia Nguyen (Mitchell)"
+  date: "`r Sys.Date()`"
+  chapters:
+    - index.qmd
+    - 1_chapter2.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: lumen
+
+editor: visual
+
