@@ -1,0 +1,62 @@
+# Chapter 5 Answers {.unnumbered}
+
+```{r setup}
+#| include: FALSE
+
+# Set knitr options
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = TRUE,
+	warning = TRUE
+)
+
+# Load packages
+
+library(pacman)
+
+p_load(
+  tidyverse
+)
+
+# Declare location
+here::i_am("quarto/4_chapter5.qmd")
+
+```
+
+# Quiz
+
+## Quiz 1
+
+### Answers
+
+## Quiz 2
+
+### Answers
+
+## Quiz 3
+
+### Answers
+
+# Choices
+
+## Ex. 1
+
+### Answers
+
+## Ex. 2
+
+### Answers
+
+# Loops
+
+## Ex. 1
+
+### Answers
+
+## Ex. 2
+
+### Answers
+
+## Ex. 3
+
+### Answers
