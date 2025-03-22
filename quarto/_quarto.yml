@@ -2,12 +2,13 @@ project:
   type: book
 
 book:
-  title: "Advanced R notebook"
+  title: "Advanced R Workbook"
   author: "Nghia Nguyen (Mitchell)"
-  date: "`r Sys.Date()`"
+  date: today
   chapters:
     - index.qmd
     - 1_chapter2.qmd
+    - 2_chapter3.qmd
     - references.qmd
 
 bibliography: references.bib

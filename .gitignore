@@ -4,3 +4,5 @@
 .Ruserdata
 /quarto/.quarto/
 /quarto/_book/
+/quarto/_publish.yml
+/quarto/quarto.Rproj
