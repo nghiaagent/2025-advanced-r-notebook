@@ -1,0 +1,96 @@
+# Chapter 4 Answers {.unnumbered}
+
+```{r setup}
+#| include: FALSE
+
+# Set knitr options
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = TRUE,
+	warning = TRUE
+)
+
+# Load packages
+
+library(pacman)
+
+p_load(
+  tidyverse
+)
+
+# Declare location
+here::i_am("quarto/3_chapter4.qmd")
+
+```
+
+# Quiz
+
+## Quiz 1
+
+### Answers
+
+## Quiz 2
+
+### Answers
+
+## Quiz 3
+
+### Answers
+
+## Quiz 4
+
+### Answers
+
+## Quiz 5
+
+### Answers
+
+# Selecting multiple elements
+
+## Ex. 1
+
+### Answers
+
+## Ex. 2
+
+### Answers
+
+## Ex. 3
+
+### Answers
+
+## Ex. 4
+
+### Answers
+
+## Ex. 5
+
+### Answers
+
+## Ex. 6
+
+### Answers
+
+# Selecting a single element
+
+## Ex. 1
+
+### Answers
+
+## Ex. 2
+
+### Answers
+
+# Applications
+
+## Ex. 1
+
+### Answers
+
+## Ex. 2
+
+### Answers
+
+## Ex. 3
+
+### Answers
