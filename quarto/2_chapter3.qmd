@@ -414,9 +414,8 @@ x <- list(
   x4
 )
 
-map(x, \(x) dim)
-map(x, \(x) str)
-map(x, \(x) print(x))
+map(x, \(x) dim(x))
+map(x, \(x) str(x))
 ```
 
 ## Ex. 4
@@ -472,15 +471,15 @@ vars <- list(
 contingency_tables <- vars %>%
   map(\(vars) {
     mtcars %>%
-      dplyr::select(vars) %>%
+      dplyr::select(all_of(vars)) %>%
       table()
   })
 
 # Show dimension of all cases
-map(contingency_tables, dim)
-
-# Print all cases
-map(contingency_tables, print)
+map(
+  contingency_tables,
+  \(x) dim(x)
+)
 ```
 
 ## Ex. 2
