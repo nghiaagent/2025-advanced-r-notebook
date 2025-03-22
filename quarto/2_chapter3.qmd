@@ -1,9 +1,3 @@
----
-output: html_document
-editor_options: 
-  chunk_output_type: inline
----
-
 # Chapter 3 Answers {.unnumbered}
 
 ```{r setup}
@@ -657,7 +651,7 @@ getAnywhere(t.data.frame)
 
 ```{r}
 # Experiment with diamonds
-reactable(diamonds)
+reactable(diamonds[1:5, ])
 
 # Experiment with dataframe containing list columns
 df_experiment <- tibble(
