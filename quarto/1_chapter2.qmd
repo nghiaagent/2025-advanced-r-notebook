@@ -180,7 +180,15 @@ The function itself is written in `C`; I don't know how to understand `C` yet.
 make.names
 ```
 
-# Copy-on-modify Exercises
+## Ex. 5
+
+I slightly simplified the rules that govern syntactic names. Why is `.123e1` not a syntactic name? Read `?make.names` for the full details.
+
+### Answer
+
+Because the remaining text following `.` can be intepreted as a scientific format number `123e1 = 1.23`
+
+# Copy-on-modify
 
 ## Ex. 1
 
