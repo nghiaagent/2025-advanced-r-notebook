@@ -352,4 +352,121 @@ obj_size(a, b)
 
 ```
 
-# Modify-in-place Exercises
+# Modify-in-place
+
+## Ex. 1
+
+Explain why the following code doesn’t create a circular list.
+
+```{r}
+x <- list()
+x[[1]] <- x
+```
+
+### Answer
+
+Because the 1st `x` refers to a different object than the 2nd `x` altogether. It's not a loop. Upon the second command, a new list is created, with its first element pointing to the list behind the first `x`, then the new list is bound to `x`.
+
+```{r}
+# Profile the 1st x
+x <- list()
+lobstr::ref(x)
+lobstr::tree(x)
+
+# Profile the 2nd x
+x[[1]] <- x
+lobstr::ref(x)
+lobstr::tree(x)
+```
+
+## Ex. 2
+
+Wrap the two methods for subtracting medians into two functions, then use the `bench` package to carefully compare their speeds. How does performance change as the number of columns increase?
+
+**NB:** The methods are:
+
+```{r}
+# Subtract median from all elements of a dataframe
+method_1 <- function(x, medians) {
+  for (i in seq_along(medians)) {
+    x[[i]] <- x[[i]] - medians[[i]]
+  }
+}
+
+# Coerce dataframe to list prior to calculation of median
+method_2 <- function(x, medians) {
+  y <- as.list(x)
+  
+  for (i in seq_along(medians)) {
+    y[[i]] <- y[[i]] - medians[[i]]
+  }
+}
+```
+
+### Answer
+
+Method 2 would be faster than method 1 since fewer copies are performed.
+
+```{r}
+# For the following dataframe and medians
+x <- data.frame(matrix(
+  runif(5 * 1e4), 
+  ncol = 5
+))
+
+medians <- vapply(
+  x,
+  median,
+  numeric(1)
+)
+  
+# Compare performance
+bench::mark(
+  method_1(x, medians),
+  method_2(x, medians)
+)
+```
+
+The 2nd method seems to be 3x faster (likely due to needing fewer copies)
+
+```{r}
+# For the following dataframe and medians
+x <- data.frame(matrix(
+  runif(500 * 1e4), 
+  ncol = 500
+))
+
+medians <- vapply(
+  x,
+  median,
+  numeric(1)
+)
+  
+# Compare performance
+bench::mark(
+  method_1(x, medians),
+  method_2(x, medians)
+)
+```
+
+## Ex. 3
+
+What happens if you attempt to use tracemem() on an environment?
+
+### Answer
+
+Experiment:
+
+```{r}
+#| error: TRUE
+
+env_test <- rlang::env(
+  a = 1,
+  b = 2,
+  c = 3
+)
+
+tracemem(env_test)
+```
+
+`tracemem()` will not trace it, because environments are not copied when they are modified. They are always modified in place.
