@@ -1,0 +1,743 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
+
+# Chapter 3 Answers {.unnumbered}
+
+```{r setup}
+#| include: FALSE
+
+# Set knitr options
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = TRUE,
+	warning = TRUE
+)
+
+# Load packages
+
+library(pacman)
+
+p_load(
+  lobstr,
+  tidyverse,
+  reactable,
+  DT,
+  gt
+)
+
+# Declare location
+here::i_am("quarto/2_chapter3.qmd")
+
+```
+
+# Quiz
+
+## Quiz 1
+
+What are the four common types of atomic vectors? What are the two rare types?
+
+### Answers
+
+The 4 common types are `logical`, `double`, `integer`, and `character`
+
+```{r}
+list(
+  c(TRUE, FALSE),
+  c(1.41, 5.45),
+  c(1L, 2L),
+  c("banana", "apple")
+) %>%
+  map(typeof)
+```
+
+The 2 rare types are `complex` (depicting complex numbers) and `raw` (binary data, displayed as hex values).
+
+```{r}
+# Build example complex vector
+vec_complex <- complex(2)
+vec_complex[[1]] <- 1
+vec_complex[[2]] <- 2 + 3i
+
+# Profile it
+## Call vector directly to see complex data
+vec_complex
+
+## Check type
+vec_complex %>%
+  typeof()
+```
+
+```{r}
+# Build example raw vector
+vec_raw <- raw(2)
+vec_raw[[1]] <- as.raw(15)
+vec_raw[[2]] <- charToRaw("P")
+
+# Profile it
+## Call vector directly to see hex data
+vec_raw
+
+## Check type
+vec_raw %>%
+  typeof()
+
+## See stored data as decimal integers
+vec_raw %>%
+  as.integer()
+
+## Convert hex 0x50 to character
+vec_raw[[2]] %>%
+  rawToChar()
+```
+
+## Quiz 2
+
+What are attributes? How do you get them and set them?
+
+### Answers
+
+Attributes are metadata attached to atomic vectors to create more complex data structures from them. For example, `dim` turns a vector into a matrix, `names` gives each vector elements a name.
+
+For example:
+
+```{r}
+x <- c(1:6)
+
+# Turn above vector into matrix (note vectors are created column-wise)
+dim(x) <- c(2, 3)
+x
+```
+
+## Quiz 3
+
+How is a list different from an atomic vector? How is a matrix different from a data frame?
+
+### Answers
+
+-   A list is a vector of references to objects. These objects can be vectors themselves. Lists don't contain actual "data". Whereas vectors contain data.
+
+-   A matrix is an atomic vector with a `dim` attribute. A data frame is a list of atomic vectors. All data in a matrix must be the same type, where each column in a data frame may have a different type.
+
+## Quiz 4
+
+Can you have a list that is a matrix? Can a data frame have a column that is a matrix?
+
+### Answers
+
+List that is a matrix: By assigning dimensions to a list:
+
+```{r}
+x <- list(
+  c(1, 2),
+  c(3, 4),
+  c(5, 6),
+  c(7, 8)
+)
+
+dim(x) <- c(2, 2)
+
+str(x)
+tree(x)
+x
+```
+
+Matrix a column of a dataframe: By assigning (making sure there are enough rows):
+
+```{r}
+x <- data.frame(
+  names = c("a", "b", "c")
+)
+x$val <- matrix(c(1:15), nrow = 3, ncol = 5)
+
+str(x)
+# Note that rendering of this dataframe is inconsistent
+print(x)
+reactable(x)
+datatable(x)
+gt(x)
+```
+
+## Quiz 5
+
+How do tibbles behave differently from data frames?
+
+### Answers
+
+They don't coerce strings to factors, print more nicely, and has more robust subsetting.
+
+# Atomic vectors
+
+## Ex. 1
+
+How do you create raw and complex scalars? (See ?raw and ?complex.)
+
+### Answers
+
+Many ways to create raw vectors:
+
+```{r}
+# Create vector containing raw data
+x <- c(as.raw(40), as.raw(50))
+
+x
+typeof(x)
+
+# Create vector, then coerce it to raw
+x <- c(40, 50) %>%
+  as.raw()
+
+x
+typeof(x)
+
+# Create empty raw vector then fill slots
+x <- raw(2)
+x[[1]] <- as.raw(40)
+x[[2]] <- as.raw(50)
+
+x
+typeof(x)
+```
+
+Many ways to create complex vectors
+
+```{r}
+
+# Create vector containing complex data
+x <- c(1 + 6i, 1.7 + 3.2i)
+
+x
+typeof(x)
+
+# Create vector, then coerce it to complex
+## Note: no imaginary part, initially
+x <- c(1, 1.7)
+
+x
+typeof(x)
+
+x <- x %>%
+  as.complex()
+
+x
+typeof(x)
+
+# Create empty raw vector then fill slots
+x <- complex(2)
+x[[1]] <- 1 + 6i
+x[[2]] <- 1.7 + 3.2i
+
+x
+typeof(x)
+```
+
+## Ex. 2
+
+Test your knowledge of the vector coercion rules by predicting the output of the following uses of `c()`:
+
+```{r}
+#| eval: false
+c(1, FALSE)
+c("a", 1)
+c(TRUE, 1L)
+```
+
+### Answers
+
+```{r}
+# Coerced to double
+c(1, FALSE) %>%
+  typeof()
+# Coerced to character
+c("a", 1) %>%
+  typeof()
+# Coerced to integer
+c(TRUE, 1L) %>%
+  typeof()
+```
+
+## Ex. 3
+
+Why is `1 == "1"` true? Why is `-1 < FALSE` true? Why is `"one" < 2` false?
+
+### Answers
+
+Because both sides of the argument are coerced (in the order of logical - numeric - character) prior to comparison.
+
+```{r}
+# First comparison: Both sides coerced to character.
+c(1, "1") %>%
+  typeof()
+
+# Second comparison: Both sides coerced to numeric
+c(-1, FALSE) %>%
+  typeof()
+
+c(-1, FALSE)
+
+# Third comparison: Both sides coerced to character, comparison not possible
+c("one", 2) %>%
+  typeof()
+
+c("one", 2)
+
+```
+
+## Ex. 4
+
+Why is the default missing value, NA, a logical vector? What’s special about logical vectors? (Hint: think about `c(FALSE, NA_character_)`.)
+
+### Answers
+
+NA is automatically set to the strictest type possible, allowing it to be coerced following the rest of the vector. Where coercion is not needed, it defaults to the strictest type of logical.
+
+```{r}
+typeof(NA)
+typeof(NA_integer_)
+```
+
+## Ex. 5
+
+Precisely what do `is.atomic()`, `is.numeric()`, and `is.vector()` test for?
+
+### Answers
+
+-   `is.atomic()` checks whether the object is an atomic vector (falling into 6 defined classes and direct extensions)
+-   `is.numeric())` checks whether the data is intepretable as numbers (base type `double` or `integer`)
+-   `is.vector()` checks whether the provided vector (includes list) have no attributes other than names. Since a matrix is a vector with the `dim` attribute, it would fail this test.
+
+```{r}
+# Test a few scenarios
+list(
+  list = list(),
+  matrix = matrix(
+    c(1:12),
+    nrow = 3,
+    ncol = 4
+  ),
+  logical = c(TRUE, FALSE),
+  integer = c(4L, 6L),
+  double = c(2.4, 5.2),
+  character = c("cook", "no"),
+  factor = c("red", "blue")
+) %>%
+  map(\(x) {
+    c(
+      is.atomic(x),
+      is.numeric(x),
+      is.vector(x)
+    )
+  })
+```
+
+# Attributes
+
+## Ex. 1
+
+How is `setNames()`implemented? How is `unname()` implemented? Read the source code.
+
+### Answers
+
+`setNames` is simply an inline version of the `names` attribute setter function.
+
+```{r}
+setNames
+```
+
+`unname()` is more complicated. - If the object has a `names` attribute, set it to NULL - If the object has a `dimnames` attribute, is a dataframe, and force is `TRUE` set it to NULL
+
+```{r}
+unname
+```
+
+## Ex. 2
+
+What does `dim()` return when applied to a 1-dimensional vector? When might you use `NROW()` or `NCOL()`?
+
+### Answers
+
+`dim()` returns NULL when applied to a 1-dimensional vector.
+
+```{r}
+x <- c(1, 2, 3)
+dim(x)
+```
+
+`NROW()` and `NCOL()` are applied to objects feasibly treated as 2-dimensional, such as vectors, matrix, dataframe. Difference between `nrow()` and `NROW()` is that `NROW()` treats vectors as a matrix with one column.
+
+The length of the 1st dimension is the number of rows, the length of the 2nd dimension is the number of columns.
+
+```{r}
+x <- list(
+  vector = c(1:18),
+  matrix = matrix(1:18, nrow = 6, ncol = 3),
+  array = array(1:18, dim = c(2, 3, 3))
+)
+
+# Test with nrow, ncol
+map(x,
+  \(x) c(nrow(x), ncol(x))
+)
+
+# Test with NROW, NCOL
+map(x,
+  \(x) c(NROW(x), NCOL(x))
+)
+```
+
+## Ex. 3
+
+How would you describe the following three objects? What makes them different from 1:5?
+
+```{r}
+x1 <- array(1:5, c(1, 1, 5))
+x2 <- array(1:5, c(1, 5, 1))
+x3 <- array(1:5, c(5, 1, 1))
+x4 <- c(1:5)
+```
+
+### Answers
+
+-   `x1` is a 3D array with 1 row, 1 column, and 5 third-dimensional length
+-   `x2` is a 3D array with 1 row, 5 columns, and 1 third-dimensional length
+-   `x3` is a 3D array with 5 row, 1 columns, and 1 third-dimensional length
+
+They are 3-dimensional objects with a dim attribute, whereas `1:5` does not.
+
+```{r}
+x <- list(
+  x1,
+  x2,
+  x3,
+  x4
+)
+
+map(x, \(x) dim)
+map(x, \(x) str)
+map(x, \(x) print(x))
+```
+
+## Ex. 4
+
+An early draft used this code to illustrate `structure()`:
+
+```{r}
+structure(1:5, comment = "my attribute")
+```
+
+But when you print that object you don’t see the comment attribute. Why? Is the attribute missing, or is there something else special about it?
+
+### Answers
+
+By default, the comment attribute is not printed. See `?comment`
+
+```{r}
+# Create test object
+x <- structure(1:5, comment = "my attribute")
+
+# Check type
+typeof(x)
+
+# Check attributes is assigned
+str(attributes(x))
+
+# Print
+print(x)
+```
+
+# S3 atomic vectors
+
+## Ex. 1
+
+What sort of object does `table()` return? What is its type? What attributes does it have? How does the dimensionality change as you tabulate more variables?
+
+### Answers
+
+`table()` returns a contingency table (technically an array) detailing the counts of each combinations of a factor or vector. Number of array dimensions increase as the number of variables in the contingency table increases.
+
+```{r}
+# Test with mtcars dataset
+reactable(mtcars)
+
+# Create list of all contingency tables
+vars <- list(
+  c("cyl"),
+  c("cyl", "am"),
+  c("cyl", "am", "gear"),
+  c("cyl", "am", "gear", "carb")
+)
+
+contingency_tables <- vars %>%
+  map(\(vars) {
+    mtcars %>%
+      dplyr::select(vars) %>%
+      table()
+  })
+
+# Show dimension of all cases
+map(contingency_tables, dim)
+
+# Print all cases
+map(contingency_tables, print)
+```
+
+## Ex. 2
+
+What happens to a factor when you modify its levels?
+
+```{r}
+f1 <- factor(letters)
+levels(f1) <- rev(levels(f1))
+```
+
+### Answers
+
+The underlying integer vector is unchanged, but the reversed levels attribute cause the factor to be reversed. In effect, the data is changed. So don't use `rev()` for this purpose...
+
+```{r}
+# Profile original factor
+f1 <- factor(letters)
+
+f1
+as.integer(f1)
+
+# Profile reversed factor
+levels(f1) <- rev(levels(f1))
+
+f1
+as.integer(f1)
+```
+
+## Ex. 3
+
+What does this code do? How do `f2` and `f3` differ from `f1`?
+
+```{r}
+f2 <- rev(factor(letters))
+f3 <- factor(letters, levels = rev(letters))
+```
+
+### Answers
+
+-   `f1`: The underlying integer vector is maintained, but the factors are reversed, leading to modification of data.
+
+-   `f2`: The underlying integer vector is reversed, the factors are not. This represents a modification of the data.
+
+-   `f3`: The underlying integer vector is reversed, the factors are also reversed. Hence, the data is (in effect) unchanged.
+
+```{r}
+# Create a completely unchanged factor for reference
+f0 <- factor(letters)
+
+factors <- list(
+  f0 = f0, 
+  f1 = f1, 
+  f2 = f2, 
+  f3 = f3
+)
+
+# f1 and f2 are effectively reversed
+factors
+
+# f2 and f3 are reversed in the integer vector
+factors %>%
+  map(as.integer)
+
+# f1 and f3 has levels reversed
+factors %>%
+  map(levels)
+```
+
+# Lists
+
+## Ex. 1
+
+List all the ways that a list differs from an atomic vector.
+
+### Answers
+
+-   A list object does not itself contain data, only references to data objects.
+-   A list can contain multiple object types, even other lists. This recursiveness makes them different from vectors
+
+## Ex. 2
+
+Why do you need to use `unlist()` to convert a list to an atomic vector? Why doesn’t `as.vector()` work?
+
+### Answers
+
+A list can contain lists or other objects that do not fit inside an atomic vector. `unlist()` has extra logic to handle this, `as.vector()` doesn't.
+
+## Ex. 3
+
+Compare and contrast `c()` and `unlist()` when combining a date and date-time into a single vector.
+
+### Answers
+
+```{r}
+# Experiment: Set up vectors
+date <- c(
+  as.Date("1970-01-01"),
+  as.Date("2001-09-11")
+)
+
+date_time <- c(
+  as.POSIXct("2018-12-01 21:00", tz = "UTC"),
+  as.POSIXct("2021-06-01 12:00", tz = "UTC")
+)
+
+a <- c(date, date_time)
+b <- unlist(list(date, date_time))
+
+# The original vectors are Date and POSIXct types
+date
+typeof(date)
+
+date_time
+typeof(date_time)
+
+# Profile a
+## a is of type Date. Coercion happened to remove time information
+a
+typeof(a)
+
+### a contains the number of days since the epoch
+as.integer(a)
+
+# Profile b
+## b is of type double. All attributes were stripped from both original vectors, leaving only the numeric data behind. Elements represent days since the epoch or seconds since the epoch.
+b
+typeof(b)
+
+```
+
+# Data frames and tibbles
+
+## Ex. 1
+
+Can you have a data frame with zero rows? What about zero columns?
+
+### Answers
+
+```{r}
+x <- data.frame()
+```
+
+Yes and yes, a dataframe can have no rows and columns. This can also occur via subsetting of dataframes.
+
+```{r}
+mtcars[0, 0]
+```
+
+## Ex. 2
+
+What happens if you attempt to set rownames that are not unique?
+
+### Answers
+
+With the case of dataframes, an error is given, since each row is meant to represent an unique sample.
+
+```{r}
+#| error: TRUE
+x <- mtcars[c(1:4),]
+rownames(x) <- c("car", "car", "bike", "bicycle")
+```
+
+## Ex. 3
+
+If df is a data frame, what can you say about `t(df)`, and `t(t(df))`? Perform some experiments, making sure to try different column types.
+
+### Answers
+
+First, the dataframe is coerced to a matrix. At this step, all values are coerced to the same type.
+
+```{r}
+getAnywhere(t.data.frame)
+```
+
+```{r}
+# Experiment with diamonds
+reactable(diamonds)
+
+# Experiment with dataframe containing list columns
+df_experiment <- tibble(
+  x = c(1, 2, 3),
+  y = list(
+    c(4, 5, 6),
+    c(7, 8, 9),
+    c(10, 11, 12)
+  )
+)
+```
+
+```{r}
+# Transpose only numeric. Data is of type double, unchanged.
+x <- diamonds[1:5, c("depth", "x")] %>%
+  t()
+
+typeof(x)
+x
+
+# Transpose again. Data is of type double, unchanged.
+x <- x %>%
+  t()
+
+typeof(x)
+x
+
+# Transpose mix of numeric and factors. Data is coerced to type character.
+x <- diamonds[1:5, c("depth", "color")] %>%
+  t()
+
+# Transpose again. Data is coerced to type character.
+x <- x %>%
+  t()
+
+typeof(x)
+x
+
+# Transport df containing list-cols. df is coerced to a matrix (list with dimensions) instead.
+x <- df_experiment %>%
+  t()
+
+typeof(x)
+x
+```
+
+## Ex. 4
+
+What does `as.matrix()` do when applied to a data frame with columns of different types? How does it differ from `data.matrix()`?
+
+### Answers
+
+```{r}
+# as.matrix coerces to most general type (character)
+x <- as.matrix(diamonds)
+typeof(x)
+reactable(x)
+
+# data.matrix replace factor by their internal codes, then coerce to numeric.
+y <- data.matrix(diamonds)
+typeof(y)
+reactable(y)
+
+# data.matrix coerces characters to factors, then do the usual replacing.
+z <- diamonds %>%
+  mutate(
+    cut = cut %>%
+      as.character(),
+    color = color %>%
+      as.character(),
+    clarity = clarity %>%
+      as.character(),
+  )
+
+str(z)
+
+z <- data.matrix(z)
+typeof(z)
+reactable(z)
+```
+
+In summary, `as.matrix()` coerces dataframes to characters, `data.matrix()` coerces dataframes to numeric.
