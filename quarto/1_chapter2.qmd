@@ -1,4 +1,4 @@
-# Chapter 2 Answers {.unnumbered}
+# Names and values {.unnumbered}
 
 ```{r setup}
 #| include: FALSE
@@ -24,9 +24,10 @@ p_load(
 # Declare location
 here::i_am("quarto/1_chapter2.qmd")
 
-```
+# Set seed
+set.seed(6969)
 
-Questions [here](https://adv-r.hadley.nz/names-values.html)
+```
 
 # Quiz
 

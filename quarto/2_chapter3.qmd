@@ -1,4 +1,4 @@
-# Chapter 3 Answers {.unnumbered}
+# Vectors {.unnumbered}
 
 ```{r setup}
 #| include: FALSE
@@ -25,6 +25,8 @@ p_load(
 # Declare location
 here::i_am("quarto/2_chapter3.qmd")
 
+# Set seed
+set.seed(6969)
 ```
 
 # Quiz
