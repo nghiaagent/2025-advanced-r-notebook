@@ -454,7 +454,8 @@ What sort of object does `table()` return? What is its type? What attributes doe
 
 ```{r}
 # Test with mtcars dataset
-reactable(mtcars)
+mtcars %>%
+  reactable(defaultPageSize = 4)
 
 # Create list of all contingency tables
 vars <- list(
@@ -653,7 +654,8 @@ getAnywhere(t.data.frame)
 
 ```{r}
 # Experiment with diamonds
-reactable(diamonds[1:5, ])
+diamonds[1:5, ] %>%
+  reactable(defaultPageSize = 4)
 
 # Experiment with dataframe containing list columns
 df_experiment <- tibble(
@@ -710,12 +712,14 @@ What does `as.matrix()` do when applied to a data frame with columns of differen
 # as.matrix coerces to most general type (character)
 x <- as.matrix(diamonds)
 typeof(x)
-reactable(x)
+x %>%
+  reactable(defaultPageSize = 4)
 
 # data.matrix replace factor by their internal codes, then coerce to numeric.
 y <- data.matrix(diamonds)
 typeof(y)
-reactable(y)
+y %>%
+  reactable(defaultPageSize = 4)
 
 # data.matrix coerces characters to factors, then do the usual replacing.
 z <- diamonds %>%
@@ -732,7 +736,8 @@ str(z)
 
 z <- data.matrix(z)
 typeof(z)
-reactable(z)
+z %>%
+  reactable(defaultPageSize = 4)
 ```
 
 In summary, `as.matrix()` coerces dataframes to characters, `data.matrix()` coerces dataframes to numeric.
