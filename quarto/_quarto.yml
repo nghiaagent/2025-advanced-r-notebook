@@ -5,19 +5,28 @@ book:
   title: "Advanced R Workbook"
   author: "Nghia Nguyen (Mitchell)"
   date: today
+  repo-url: https://github.com/nghiaagent/2025-advanced-r-notebook
   chapters:
     - index.qmd
-    - 1_chapter2.qmd
-    - 2_chapter3.qmd
-    - 3_chapter4.qmd
-    - 4_chapter5.qmd
-    - references.qmd
+    - part: "Foundations"
+      chapters:
+      - 1_chapter2.qmd
+      - 2_chapter3.qmd
+      - 3_chapter4.qmd
+      - 4_chapter5.qmd
+    - part: "Functional programming"
+    - part: "Object-oriented programming"
+    - part: "Metaprogramming"
+    - part: "Techniques"
+    - part: "Appendices"
+      chapters:
+      - references.qmd
 
 bibliography: references.bib
 
 format:
   html:
-    theme: lumen
+    theme: zephyr
 
 editor: visual
 
