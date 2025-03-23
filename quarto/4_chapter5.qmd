@@ -21,19 +21,32 @@ p_load(
 # Declare location
 here::i_am("quarto/4_chapter5.qmd")
 
+# Set seed
+set.seed(6969)
 ```
 
 # Quiz
 
 ## Quiz 1
 
+What is the difference between `if` and `ifelse()`?
+
 ### Answers
 
 ## Quiz 2
 
+In the following code, what will the value of `y` be if `x` is `TRUE`? What if `x` is `FALSE`? What if `x` is `NA`?
+
+```{r}
+#| eval: false
+y <- if (x) 3
+```
+
 ### Answers
 
 ## Quiz 3
+
+What does `switch("x", x = , y = 2, z = 3)` return?
 
 ### Answers
 
@@ -41,9 +54,27 @@ here::i_am("quarto/4_chapter5.qmd")
 
 ## Ex. 1
 
+What type of vector does each of the following calls to `ifelse()` return?
+
+```{r}
+ifelse(TRUE, 1, "no")
+ifelse(FALSE, 1, "no")
+ifelse(NA, 1, "no")
+```
+
 ### Answers
 
 ## Ex. 2
+
+Why does the following code work?
+
+```{r}
+x <- 1:10
+if (length(x)) "not empty" else "empty"
+
+x <- numeric()
+if (length(x)) "not empty" else "empty"
+```
 
 ### Answers
 
@@ -51,12 +82,40 @@ here::i_am("quarto/4_chapter5.qmd")
 
 ## Ex. 1
 
+Why does this code succeed without errors or warnings?
+
+```{r}
+x <- numeric()
+out <- vector("list", length(x))
+for (i in 1:length(x)) {
+  out[i] <- x[i] ^ 2
+}
+out
+```
+
 ### Answers
 
 ## Ex. 2
 
+When the following code is evaluated, what can you say about the vector being iterated?
+
+```{r}
+xs <- c(1, 2, 3)
+for (x in xs) {
+  xs <- c(xs, x * 2)
+}
+xs
+```
+
 ### Answers
 
 ## Ex. 3
+
+```{r}
+for (i in 1:3) {
+  i <- i * 2
+  print(i) 
+}
+```
 
 ### Answers
