@@ -42,7 +42,7 @@ names(df) <- c(1, 2)
 
 ### Answer
 
-1 and 2 and 3 are challenging as var names since they are non-syntactic names. Though they can still be used (here) via coercing:
+`1` and `2` and `3` are challenging as variable names since they are non-syntactic names. Though they can still be used (here) via coercing:
 
 ```{r Quiz 1 A}
 df$`3` <- df$`1` + df$`2`
@@ -63,7 +63,7 @@ y <- list(x, x, x)
 
 ### Answer
 
-y takes slightly more memory than x, but not 3 times more (only 80 bytes). This is because y is a list containing 3 references to the 1 vector underlying x. List structure takes up 80 bytes, the vector takes up 8MB.
+In this code, y takes slightly more memory than x, but not 3 times more (only 80 bytes). This is because y is a list containing 3 references to the 1 vector underlying x. List structure takes up 80 bytes, the vector takes up 8MB.
 
 ```{r Quiz 2 A}
 lobstr::obj_size(x)
@@ -74,7 +74,7 @@ lobstr::obj_size(y) - lobstr::obj_size(x)
 
 ## Quiz 3
 
-On which line does a get copied in the following example?
+On which line does `a` get copied in the following example?
 
 ```{r Quiz 3 Q}
 a <- c(1, 5, 3, 2)
@@ -85,7 +85,7 @@ b[[1]] <- 10
 
 ### Answer
 
-Line 3 of previous block `b[[1]] <- 10`, since that is when `b` is modified and a new vector is created to contain data that b points to.
+`a` gets copied at line 3 of previous block `b[[1]] <- 10`, since that is when `b` is modified and a new vector is created to contain data that b points to.
 
 # Binding basics
 
@@ -93,17 +93,16 @@ Line 3 of previous block `b[[1]] <- 10`, since that is when `b` is modified and 
 
 Explain the relationship between `a`, `b`, `c`, and `d` in the following code:
 
+### Answers
+- `a` points to a vector
+- `b` points to the same vector as `a`
+- `c` points to the same vector as `a` and `b`
+- `d` points to a different vector
+
 ```{r Ex 2.2.1}
-# a points to a vector (probably ALTREP)
 a <- 1:10
-
-# b points to the same vector as a 
 b <- a
-
-# c points to the same vector as b, and hence the same as a 
 c <- b
-
-# d points to a different vector
 d <- 1:10
 
 # Proof
@@ -128,24 +127,23 @@ match.fun("mean")
 
 ### Answer
 
-All points to the same function
+All expressions above point to the same function
 
 ```{r}
-mean |>
+mean %>%
   lobstr::obj_addr()
 
-base::mean |>
+base::mean %>%
   lobstr::obj_addr()
 
-get("mean") |>
+get("mean") %>%
   lobstr::obj_addr()
 
-evalq(mean) |>
+evalq(mean) %>%
   lobstr::obj_addr()
 
-match.fun("mean") |>
+match.fun("mean") %>%
   lobstr::obj_addr()
-
 
 ```
 
@@ -155,14 +153,14 @@ By default, base R data import functions, like `read.csv()`, will automatically 
 
 ### Answer
 
-Because they by default creates syntactic names from headers. This changes data without user input.
+`read.csv()` is problematic because they by default creates syntactic names from headers. This changes data without user input.
 
 ```{r}
 #| eval: false
 ?read.csv
 ```
 
-Set `check.names = FALSE` for safety.
+Set `check.names = FALSE` to suppress this behaviour
 
 ## Ex. 4
 
@@ -174,6 +172,8 @@ What rules does `make.names()` use to convert non-syntactic names into syntactic
 #| eval: false
 ?make.names
 ```
+
+The rules for `make.names()` are:
 
 -   Prepend `X` if first character is invalid
 -   Translate all invalid characters to `.`
@@ -192,7 +192,7 @@ I slightly simplified the rules that govern syntactic names. Why is `.123e1` not
 
 ### Answer
 
-Because the remaining text following `.` can be intepreted as a scientific format number `123e1 = 1.23`
+`.123e1` is not a syntactic name because the remaining text following `.` can be intepreted as a scientific  number `123e1 = 1.23`
 
 # Copy-on-modify
 
@@ -224,7 +224,7 @@ x[[3]] <- 4
 
 ### Answer
 
-Because `x[[3]]` was replaced with a double. This means the object that x points to was modified (thus copied) twice; first to coerce a integer vector to a double vector, second to replace `x[[3]]` with `4`
+`tracemem()` shows two copies because `x[[3]]` was replaced with a double. This means the object that x points to was modified (thus copied) twice; first to coerce a integer vector to a double vector, second to replace `x[[3]]` with `4`
 
 ```{r}
 x <- c(1L, 2L, 3L)
@@ -245,6 +245,8 @@ c <- list(b, a, 1:10)
 ```
 
 ### Answer
+
+Relationship is as follows
 
 -   `a` points to an ALTREP vector representing `1:10`
 -   `b` is a list containing 2 references to the ALTREP vector representing `1:10`
@@ -305,7 +307,7 @@ obj_size(y)
 
 ### Answer
 
-This is because `object.size(y)` does not take into account the degree of memory sharing in the list.
+`object.size(y)` and `obj_size(y)` are  different because `object.size(y)` does not take into account the degree of memory sharing in the list.
 
 ## Ex. 2
 
@@ -319,7 +321,7 @@ obj_size(funs)
 
 ### Answer
 
-Because `mean`, `sd`, `var` are base R functions; the list does not contain exact copies, but only references. As in Ex. 1, this would be shown via `object.size()` and `obj_size()`
+The size are misleading because `mean`, `sd`, `var` are base R functions; the list does not contain exact copies, but only references. As in Ex. 1, this would be shown via `object.size()` and `obj_size()`
 
 ```{r}
 object.size(funs)
