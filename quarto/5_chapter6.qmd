@@ -1,0 +1,200 @@
+# Functions {.unnumbered}
+
+```{r setup}
+#| include: FALSE
+
+# Set knitr options
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = TRUE,
+  warning = TRUE
+)
+
+# Load packages
+
+library(pacman)
+
+p_load(
+  tidyverse
+)
+
+# Declare location
+here::i_am("quarto/5_chapter6.qmd")
+
+# Set seed
+set.seed(6969)
+```
+
+# Quiz
+
+## Quiz 1
+
+### Answers
+
+## Quiz 2
+
+### Answers
+
+## Quiz 3
+
+### Answers
+
+## Quiz 4
+
+### Answers
+
+## Quiz 5
+
+### Answers
+
+## Quiz 6
+
+### Answers
+
+## Quiz 7
+
+### Answers
+
+# Function fundamentals
+
+## Ex. 1
+
+### Answers
+
+## Ex. 2
+
+### Answers
+
+## Ex. 3
+
+### Answers
+
+## Ex. 4
+
+### Answers
+
+## Ex. 5
+
+### Answers
+
+## Ex. 6
+
+### Answers
+
+## Ex. 7
+
+### Answers
+
+# Lexical scoping
+
+## Ex. 1
+
+### Answers
+
+## Ex. 2
+
+### Answers
+
+## Ex. 3
+
+### Answers
+
+# Lazy evaluation
+
+## Ex. 1
+
+### Answers
+
+## Ex. 2
+
+### Answers
+
+## Ex. 3
+
+### Answers
+
+## Ex. 4
+
+### Answers
+
+## Ex. 5
+
+### Answers
+
+## Ex. 6
+
+### Answers
+
+# `...` (dot-dot-dot)
+
+## Ex. 1
+
+### Answers
+
+## Ex. 2
+
+### Answers
+
+## Ex. 3
+
+### Answers
+
+# Exiting a function
+
+## Ex. 1
+
+### Answers
+
+## Ex. 2
+
+### Answers
+
+## Ex. 3
+
+### Answers
+
+## Ex. 4
+
+### Answers
+
+## Ex. 5
+
+### Answers
+
+# Function forms
+
+## Ex. 1
+
+### Answers
+
+## Ex. 2
+
+### Answers
+
+## Ex. 3
+
+### Answers
+
+## Ex. 4
+
+### Answers
+
+## Ex. 5
+
+### Answers
+
+## Ex. 6
+
+### Answers
+
+## Ex. 7
+
+### Answers
+
+## Ex. 8
+
+### Answers
+
+## Ex. 9
+
+### Answers

@@ -1,0 +1,26 @@
+# Environments {.unnumbered}
+
+```{r setup}
+#| include: FALSE
+
+# Set knitr options
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = TRUE,
+  warning = TRUE
+)
+
+# Load packages
+
+library(pacman)
+
+p_load(
+  tidyverse
+)
+
+# Declare location
+here::i_am("quarto/7_chapter8.qmd")
+
+# Set seed
+set.seed(6969)
+```
