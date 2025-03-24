@@ -33,6 +33,32 @@ What is the difference between `if` and `ifelse()`?
 
 ### Answers
 
+The difference between these conditions are:
+- `if()` operates on a single logical value
+- `ifelse()` operates on a vector of logical values. Syntax is also different.
+
+```{r}
+#| eval: false
+?Control
+?ifelse
+```
+
+```{r}
+# if
+x <- TRUE
+if (x) {
+  print("Hello")
+}
+
+# ifelse
+x <- c(TRUE, FALSE, TRUE, TRUE)
+ifelse(
+  x,
+  print("Hello"),
+  print("Goodbye")
+)
+```
+
 ## Quiz 2
 
 In the following code, what will the value of `y` be if `x` is `TRUE`? What if `x` is `FALSE`? What if `x` is `NA`?
@@ -44,11 +70,43 @@ y <- if (x) 3
 
 ### Answers
 
+Outcome of all cases are:
+- `x <- TRUE`: `y` is assigned.
+- `x <- FALSE`: `y` is NULL
+- `x <- NA`: Error.
+
+```{r}
+#| error: true
+# Let's test
+## x is TRUE
+x <- TRUE
+y <- if (x) 3
+y
+## x is FALSE
+x <- FALSE
+y <- if (x) 3
+y
+## x is NA
+x <- NA
+y <- if (x) 3
+y
+```
+
 ## Quiz 3
 
 What does `switch("x", x = , y = 2, z = 3)` return?
 
 ### Answers
+
+`switch` evaluates the matched element or the first following non-missing argument. Since `x` is missing, the next argument `y` is evaluated, yielding `2`.
+
+```{r}
+switch("x",
+  x = ,
+  y = 2,
+  z = 3
+)
+```
 
 # Choices
 
@@ -57,12 +115,25 @@ What does `switch("x", x = , y = 2, z = 3)` return?
 What type of vector does each of the following calls to `ifelse()` return?
 
 ```{r}
+#| eval: false
 ifelse(TRUE, 1, "no")
 ifelse(FALSE, 1, "no")
 ifelse(NA, 1, "no")
 ```
 
 ### Answers
+
+```{r}
+# Evaluates to the TRUE arg, 1
+ifelse(TRUE, 1, "no")
+
+# Evaluates to the FALSE arg, no
+ifelse(FALSE, 1, "no")
+
+# NA propagates, result is NA
+ifelse(NA, 1, "no")
+```
+
 
 ## Ex. 2
 
@@ -78,6 +149,23 @@ if (length(x)) "not empty" else "empty"
 
 ### Answers
 
+The code works because:
+
+- For the vector `1:10`, its length is 10 and is equal to `TRUE`.
+- For the vector `numeric()`, its length is 10 and is equal to `FALSE`.
+
+```{r}
+# Length of x is 10, equal to TRUE
+x <- 1:10
+length(x)
+length(x) == TRUE
+
+# Length of x is 0, equal to FALSE
+x <- numeric()
+length(x)
+length(x) == FALSE
+```
+
 # Loops
 
 ## Ex. 1
@@ -88,12 +176,61 @@ Why does this code succeed without errors or warnings?
 x <- numeric()
 out <- vector("list", length(x))
 for (i in 1:length(x)) {
-  out[i] <- x[i] ^ 2
+  out[i] <- x[i]^2
 }
 out
 ```
 
 ### Answers
+
+This horrorshow works because:
+
+- `vector()` by default, creates an empty vector. This behaviour is intended.
+- `1:length(x)` is a vector counting down from 1 to 0 (`c(1, 0)`)
+
+```{r}
+# Example case
+x1 <- vector(
+  mode = "list",
+  length = numeric() %>%
+    length()
+)
+
+# Default case
+x2 <- vector(
+  mode = "list"
+)
+
+identical(x1, x2)
+
+```
+
+During the first iteration, the following occurs:
+
+- The subsetting of `x` successfully returns `NA` as intended.
+- The `out[1]` list element is successfully set as intended.
+
+```{r}
+x <- numeric()
+out <- vector("list", length(x))
+
+out[1] <- x[1]^2
+```
+
+During the second iteration, the following occurs:
+
+- The subsetting of `x` returns a zero length vector not containing any data.
+- The subsetting of `out` returns a zero length vector not containing any data.
+- No data accessed or modified.
+
+```{r}
+x <- numeric()
+out <- vector("list", length(x))
+
+out[0] <- x[0]^2
+```
+
+In summary, all operations behaved as intended by the code and contained no errors. 
 
 ## Ex. 2
 
@@ -109,13 +246,30 @@ xs
 
 ### Answers
 
+In every iteration, the calculated value is concatenated with the previous vector and attached to the end. The `for` looping section is evaluated prior to beginning the loop, which ensures that the loop ends in 3 iterations, even though the length of `xs` is increased by the loop. 
+
+```{r}
+xs <- c(1, 2, 3)
+for (x in xs) {
+  xs <- c(xs, x * 2)
+  print(xs)
+}
+```
+
 ## Ex. 3
 
 ```{r}
 for (i in 1:3) {
   i <- i * 2
-  print(i) 
+  print(i)
 }
 ```
 
 ### Answers
+
+In essence, there are two different `i` variables here:
+
+- The first `i` is outside of the loop and is responsible for counting the number of iterations (`1, 2, 3`)
+- The second `i` is inside the loop.
+
+At every iteration, the outer `i` is passed in the loop, doubled, printed, then replaced with the outer `i` when the next iteration begins. The outer `i` is never modified.
