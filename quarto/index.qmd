@@ -3,15 +3,15 @@
 ```{r setup}
 #| include: FALSE
 knitr::opts_chunk$set(
-	echo = TRUE,
-	message = TRUE,
-	warning = TRUE
+  echo = TRUE,
+  message = TRUE,
+  warning = TRUE
 )
 
 # Declare location
 here::i_am("quarto/index.qmd")
 
-# Install pacman 
+# Install pacman
 if (!requireNamespace("pacman")) {
   install.packages("pacman")
 }
