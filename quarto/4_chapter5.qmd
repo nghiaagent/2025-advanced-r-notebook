@@ -15,7 +15,8 @@ knitr::opts_chunk$set(
 library(pacman)
 
 p_load(
-  tidyverse
+  tidyverse,
+  lobstr
 )
 
 # Declare location
