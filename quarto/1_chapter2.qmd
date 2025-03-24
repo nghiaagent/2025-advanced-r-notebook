@@ -94,10 +94,11 @@ b[[1]] <- 10
 Explain the relationship between `a`, `b`, `c`, and `d` in the following code:
 
 ### Answers
-- `a` points to a vector
-- `b` points to the same vector as `a`
-- `c` points to the same vector as `a` and `b`
-- `d` points to a different vector
+
+-   `a` points to a vector
+-   `b` points to the same vector as `a`
+-   `c` points to the same vector as `a` and `b`
+-   `d` points to a different vector
 
 ```{r Ex 2.2.1}
 a <- 1:10
@@ -192,7 +193,7 @@ I slightly simplified the rules that govern syntactic names. Why is `.123e1` not
 
 ### Answer
 
-`.123e1` is not a syntactic name because the remaining text following `.` can be intepreted as a scientific  number `123e1 = 1.23`
+`.123e1` is not a syntactic name because the remaining text following `.` can be intepreted as a scientific number `123e1 = 1.23`
 
 # Copy-on-modify
 
@@ -307,7 +308,7 @@ obj_size(y)
 
 ### Answer
 
-`object.size(y)` and `obj_size(y)` are  different because `object.size(y)` does not take into account the degree of memory sharing in the list.
+`object.size(y)` and `obj_size(y)` are different because `object.size(y)` does not take into account the degree of memory sharing in the list.
 
 ## Ex. 2
 
