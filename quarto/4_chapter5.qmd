@@ -14,13 +14,13 @@ library("tidyverse")
 set.seed(67)
 ```
 
-# Quiz
+## Quiz
 
-## Quiz 1
+### Quiz 1
 
 What is the difference between `if` and `ifelse()`?
 
-### Answers
+#### Answers
 
 The difference between these conditions are:
 - `if()` operates on a single logical value
@@ -48,7 +48,7 @@ ifelse(
 )
 ```
 
-## Quiz 2
+### Quiz 2
 
 In the following code, what will the value of `y` be if `x` is `TRUE`? What if `x` is `FALSE`? What if `x` is `NA`?
 
@@ -57,7 +57,7 @@ In the following code, what will the value of `y` be if `x` is `TRUE`? What if `
 y <- if (x) 3
 ```
 
-### Answers
+#### Answers
 
 Outcome of all cases are:
 - `x <- TRUE`: `y` is assigned.
@@ -81,21 +81,25 @@ y <- if (x) 3
 y
 ```
 
-## Quiz 3
+### Quiz 3
 
 What does `switch("x", x = , y = 2, z = 3)` return?
 
-### Answers
+#### Answers
 
 `switch` evaluates the matched element or the first following non-missing argument. Since `x` is missing, the next argument `y` is evaluated, yielding `2`.
 
 ```{r}
-switch("x", x = , y = 2, z = 3)
+switch("x",
+  x = ,
+  y = 2,
+  z = 3
+)
 ```
 
-# Choices
+## Choices
 
-## Ex. 1
+### Ex. 1
 
 What type of vector does each of the following calls to `ifelse()` return?
 
@@ -106,7 +110,7 @@ ifelse(FALSE, 1, "no")
 ifelse(NA, 1, "no")
 ```
 
-### Answers
+#### Answers
 
 ```{r}
 # Evaluates to the TRUE arg, 1
@@ -120,7 +124,7 @@ ifelse(NA, 1, "no")
 ```
 
 
-## Ex. 2
+### Ex. 2
 
 Why does the following code work?
 
@@ -140,7 +144,7 @@ if (length(x)) {
 }
 ```
 
-### Answers
+#### Answers
 
 The code works because:
 
@@ -159,9 +163,9 @@ length(x)
 length(x) == FALSE
 ```
 
-# Loops
+## Loops
 
-## Ex. 1
+### Ex. 1
 
 Why does this code succeed without errors or warnings?
 
@@ -174,7 +178,7 @@ for (i in 1:length(x)) {
 out
 ```
 
-### Answers
+#### Answers
 
 This horrorshow works because:
 
@@ -225,7 +229,7 @@ out[0] <- x[0]^2
 
 In summary, all operations behaved as intended by the code and contained no errors. 
 
-## Ex. 2
+### Ex. 2
 
 When the following code is evaluated, what can you say about the vector being iterated?
 
@@ -237,7 +241,7 @@ for (x in xs) {
 xs
 ```
 
-### Answers
+#### Answers
 
 In every iteration, the calculated value is concatenated with the previous vector and attached to the end. The `for` looping section is evaluated prior to beginning the loop, which ensures that the loop ends in 3 iterations, even though the length of `xs` is increased by the loop. 
 
@@ -249,7 +253,7 @@ for (x in xs) {
 }
 ```
 
-## Ex. 3
+### Ex. 3
 
 ```{r}
 for (i in 1:3) {
@@ -258,7 +262,7 @@ for (i in 1:3) {
 }
 ```
 
-### Answers
+#### Answers
 
 In essence, there are two different `i` variables here:
 

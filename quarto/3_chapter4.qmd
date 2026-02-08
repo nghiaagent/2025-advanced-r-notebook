@@ -17,13 +17,13 @@ set.seed(67)
 
 ```
 
-# Quiz
+## Quiz
 
-## Quiz 1
+### Quiz 1
 
 What is the result of subsetting a vector with positive integers, negative integers, a logical vector, or a character vector?
 
-### Answers
+#### Answers
 
 - Positive integer: Select elements at specified indices
 
@@ -57,7 +57,7 @@ x <- c(1:6) %>%
 x[c("c", "a", "d")]
 ```
 
-## Quiz 2
+### Quiz 2
 
 What’s the difference between `[`, `[[`, and `$` when applied to a list?
 
@@ -70,7 +70,7 @@ x <- list(
 )
 ```
 
-### Answers
+#### Answers
 
 - `[` Get a subsetted list based on the condition
 
@@ -92,11 +92,11 @@ x$a
 ```
 
 
-## Quiz 3
+### Quiz 3
 
 When should you use `drop = FALSE`?
 
-### Answers
+#### Answers
 
 When subsetting a matrix / array / dataframe, length 1 dimensions are dropped. `drop = FALSE` prevents this.
 
@@ -110,11 +110,11 @@ x[1, , drop = FALSE] %>%
   str() # is 2D
 ```
 
-## Quiz 4
+### Quiz 4
 
 If x is a matrix, what does `x[] <- 0` do? How is it different from `x <- 0`?
 
-### Answers
+#### Answers
 
 `x[] <- 0` replaces all slots of the matrix with 0 but keeping its attributes. `x <- 0` replaces the matrix with 0.
 
@@ -132,7 +132,7 @@ x
 ```
 
 
-## Quiz 5
+### Quiz 5
 
 How can you use a named vector to relabel categorical variables?
 
@@ -142,7 +142,7 @@ x
 ```
 
 
-### Answers
+#### Answers
 
 - Create a lookup vector, use original vector values as lookup vector names
 - Subset lookup vector using original vector
@@ -163,9 +163,9 @@ x
 ```
 
 
-# Selecting multiple elements
+## Selecting multiple elements
 
-## Ex. 1
+### Ex. 1
 
 Fix each of the following common data frame subsetting errors:
 
@@ -177,7 +177,7 @@ mtcars[mtcars$cyl <= 5]
 mtcars[mtcars$cyl == 4 | 6, ]
 ```
 
-### Answers
+#### Answers
 
 ```{r}
 # Make sure the logical vector is a test
@@ -200,7 +200,7 @@ mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ] %>%
   reactable(defaultPageSize = 4)
 ```
 
-## Ex. 2
+### Ex. 2
 
 Why does the following code yield five missing values? (Hint: why is it different from `x[NA_real_]`?)
 
@@ -210,7 +210,7 @@ x[NA]
 #> [1] NA NA NA NA NA
 ```
 
-### Answers
+#### Answers
 
 - Code compares if each element of `x` is the same as `NA`; returns NA.
 - `NA` is recycled; the check is repeated for all vector elements. 
@@ -221,7 +221,7 @@ x[NA]
 1L == NA
 ```
 
-## Ex. 3
+### Ex. 3
 
 What does `upper.tri()` return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?
 
@@ -230,7 +230,7 @@ x <- outer(1:5, 1:5, FUN = "*")
 x[upper.tri(x)]
 ```
 
-### Answers
+#### Answers
 
 - `upper.tri()` returns the upper triangle (top right) portion of the matrix; where the row number is smaller than the column number.
 
@@ -246,11 +246,11 @@ upper.tri(x)
 x[upper.tri(x)]
 ```
 
-## Ex. 4
+### Ex. 4
 
 Why does `mtcars[1:20]` return an error? How does it differ from the similar `mtcars[1:20, ]`?
 
-### Answers
+#### Answers
 
 `mtcars[1:20]` get the first 20 columns of `mtcars`. There are not enough columns.
 
@@ -258,32 +258,24 @@ Why does `mtcars[1:20]` return an error? How does it differ from the similar `mt
 #| error: TRUE
 dim(mtcars)
 mtcars[1:20]
-``
-`
-`
-mtcars[1:20, ]
-` gets the first 20 rows of `
-mtcars
-`, which is valid.
+```
 
-`
-``
-{
-  r
-}
+`mtcars[1:20, ]` gets the first 20 rows of `mtcars`, which is valid.
+
+```{r}
 mtcars[1:20, ] %>%
   reactable(defaultPageSize = 4)
 ```
 
-## Ex. 5
+### Ex. 5
 
 Implement your own function that extracts the diagonal entries from a matrix (it should behave like `diag(x)` where `x` is a matrix).
 
-### Answers
+#### Answers
 
 Diagonal entries are entries where number of rows is equal to number of columns. We can programmatically create a matrix containing the relevant indices then subset the matrix for those indices.
 
-#### Desired behaviour
+##### Desired behaviour
 
 ```{r}
 # Test matrices
@@ -298,7 +290,7 @@ x <- list(
 map(x, \(x) diag(x))
 ```
 
-#### Build function
+##### Build function
 
 ```{r}
 get_matrix_diagonals <- function(matrix) {
@@ -326,11 +318,11 @@ get_matrix_diagonals <- function(matrix) {
 map(x, \(x) get_matrix_diagonals(x))
 ```
 
-## Ex. 6
+### Ex. 6
 
 What does `df[is.na(df)] <- 0` do? How does it work?
 
-### Answers
+#### Answers
 
 It replaces `NA` with 0 in all dataframe cells. It creates a new logical matrix showing the status of all dataframe cells, which can then be used to subset the dataframe. The subset is then modified.
 
@@ -355,9 +347,9 @@ x %>%
 ```
 
 
-# Selecting a single element
+## Selecting a single element
 
-## Ex. 1
+### Ex. 1
 
 Brainstorm as many ways as possible to extract the third value from the `cyl` variable in the `mtcars` dataset.
 
@@ -365,7 +357,7 @@ Brainstorm as many ways as possible to extract the third value from the `cyl` va
 data("mtcars")
 ```
 
-### Answers
+#### Answers
 
 
 ```{r}
@@ -380,7 +372,7 @@ mtcars[3, "cyl"]
 ```
 **NB**: There are other code possible to get the same results, but the 3 main strategies are here.
 
-## Ex. 2
+### Ex. 2
 
 Given a linear model, e.g., `mod <- lm(mpg ~ wt, data = mtcars)`, extract the residual degrees of freedom. Then extract the R squared from the model summary (`summary(mod)`)
 
@@ -389,7 +381,7 @@ mod <- lm(mpg ~ wt, data = mtcars)
 mod_summary <- summary(mod)
 ```
 
-### Answers
+#### Answers
 
 ```{r}
 # First, profile objects, get appropriate slots.
@@ -404,13 +396,13 @@ mod_summary$r.squared
 ```
 
 
-# Applications
+## Applications
 
-## Ex. 1
+### Ex. 1
 
 How would you randomly permute the columns of a data frame? (This is an important technique in random forests.) Can you simultaneously permute the rows and columns in one step?
 
-### Answers
+#### Answers
 
 For both, get a random vector containing column and row indices then subset the dataframe accordingly.
 
@@ -427,11 +419,11 @@ mtcars %>%
   reactable(defaultPageSize = 4)
 ```
 
-## Ex. 2
+### Ex. 2
 
 How would you select a random sample of m rows from a data frame? What if the sample had to be contiguous (i.e., with an initial row, a final row, and every row in between)?
 
-### Answers
+#### Answers
 
 - Select sample of `m` rows: Sample like Ex. 1, with an extra argument to `sample()`
 - Select sample of `m` contiguous rows: Randomly select the first row index to sample from, then select rows beginning from that index.
@@ -455,11 +447,11 @@ mtcars %>%
 ```
 
 
-## Ex. 3
+### Ex. 3
 
 How could you put the columns in a data frame in alphabetical order?
 
-### Answers
+#### Answers
 
 - Get vector depicting order of column names
 - Subset accordingly

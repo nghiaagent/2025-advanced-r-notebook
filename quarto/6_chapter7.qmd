@@ -1,4 +1,4 @@
-# Environments {.unnumbered}
+# Environments
 
 ```{r setup}
 #| include: FALSE
