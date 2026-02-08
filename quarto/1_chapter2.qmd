@@ -25,29 +25,29 @@ library("tidyverse")
 set.seed(67)
 ```
 
-# Quiz
+## Quiz
 
-## Quiz 1
+### Quiz 1
 
 Given the following data frame, how do I create a new column called "3" that contains the sum of 1 and 2? You may only use `$`, not `[[`. What makes 1, 2, and 3 challenging as variable names?
 
-```{r Quiz 1 Q}
+```{webr Quiz 1 Q}
 df <- data.frame(runif(3), runif(3))
 names(df) <- c(1, 2)
 ```
 
-### Answer
+#### Answer
 
 `1` and `2` and `3` are challenging as variable names since they are non-syntactic names. Though they can still be used (here) via coercing:
 
-```{r Quiz 1 A}
+```{webr Quiz 1 A}
 df$`3` <- df$`1` + df$`2`
 
 head(df)
 
 ```
 
-## Quiz 2
+### Quiz 2
 
 In the following code, how much memory does y occupy?
 
@@ -57,7 +57,7 @@ y <- list(x, x, x)
 
 ```
 
-### Answer
+#### Answer
 
 In this code, y takes slightly more memory than x, but not 3 times more (only 80 bytes). This is because y is a list containing 3 references to the 1 vector underlying x. List structure takes up 80 bytes, the vector takes up 8MB.
 
@@ -68,7 +68,7 @@ lobstr::obj_size(y) - lobstr::obj_size(x)
 
 ```
 
-## Quiz 3
+### Quiz 3
 
 On which line does `a` get copied in the following example?
 
@@ -79,17 +79,17 @@ b[[1]] <- 10
 
 ```
 
-### Answer
+#### Answer
 
 `a` gets copied at line 3 of previous block `b[[1]] <- 10`, since that is when `b` is modified and a new vector is created to contain data that b points to.
 
-# Binding basics
+## Binding basics
 
-## Ex. 1
+### Ex. 1
 
 Explain the relationship between `a`, `b`, `c`, and `d` in the following code:
 
-### Answers
+#### Answers
 
 -   `a` points to a vector
 -   `b` points to the same vector as `a`
@@ -110,7 +110,7 @@ lobstr::obj_addr(d)
 
 ```
 
-## Ex. 2
+### Ex. 2
 
 The following code accesses the mean function in multiple ways. Do they all point to the same underlying function object? Verify this with `lobstr::obj_addr()`.
 
@@ -122,7 +122,7 @@ evalq(mean)
 match.fun("mean")
 ```
 
-### Answer
+#### Answer
 
 All expressions above point to the same function
 
@@ -144,11 +144,11 @@ match.fun("mean") %>%
 
 ```
 
-## Ex. 3
+### Ex. 3
 
 By default, base R data import functions, like `read.csv()`, will automatically convert non-syntactic names to syntactic ones. Why might this be problematic? What option allows you to suppress this behaviour?
 
-### Answer
+#### Answer
 
 `read.csv()` is problematic because they by default creates syntactic names from headers. This changes data without user input.
 
@@ -159,11 +159,11 @@ By default, base R data import functions, like `read.csv()`, will automatically 
 
 Set `check.names = FALSE` to suppress this behaviour
 
-## Ex. 4
+### Ex. 4
 
 What rules does `make.names()` use to convert non-syntactic names into syntactic ones?
 
-### Answer
+#### Answer
 
 ```{r}
 #| eval: false
@@ -183,21 +183,21 @@ The function itself is written in `C`; I don't know how to understand `C` yet.
 make.names
 ```
 
-## Ex. 5
+### Ex. 5
 
 I slightly simplified the rules that govern syntactic names. Why is `.123e1` not a syntactic name? Read `?make.names` for the full details.
 
-### Answer
+#### Answer
 
 `.123e1` is not a syntactic name because the remaining text following `.` can be intepreted as a scientific number `123e1 = 1.23`
 
-# Copy-on-modify
+## Copy-on-modify
 
-## Ex. 1
+### Ex. 1
 
 Why is `tracemem(1:10)` not useful?
 
-### Answer
+#### Answer
 
 ```{r}
 cat(tracemem(1:10), "\n")
@@ -208,7 +208,7 @@ cat(tracemem(1:10), "\n")
 
 The purpose of `tracemem()` is to tag a named object and see when its underlying data structure is copied. `1:10` is not a named object, so `tracemem()` wouldn't be useful.
 
-## Ex. 2
+### Ex. 2
 
 Explain why `tracemem()` shows two copies when you run this code. Hint: carefully look at the difference between this code and the code shown earlier in the section.
 
@@ -219,7 +219,7 @@ tracemem(x)
 x[[3]] <- 4
 ```
 
-### Answer
+#### Answer
 
 `tracemem()` shows two copies because `x[[3]]` was replaced with a double. This means the object that x points to was modified (thus copied) twice; first to coerce a integer vector to a double vector, second to replace `x[[3]]` with `4`
 
@@ -231,7 +231,7 @@ x[[3]] <- 4
 lobstr::tree(x)
 ```
 
-## Ex. 3
+### Ex. 3
 
 Sketch out the relationship between the following objects:
 
@@ -241,7 +241,7 @@ b <- list(a, a)
 c <- list(b, a, 1:10)
 ```
 
-### Answer
+#### Answer
 
 Relationship is as follows
 
@@ -257,7 +257,7 @@ tree(b)
 tree(c)
 ```
 
-## Ex. 4
+### Ex. 4
 
 What happens when you run this code?
 
@@ -266,7 +266,7 @@ x <- list(1:10)
 x[[2]] <- x
 ```
 
-### Answer
+#### Answer
 
 Originally, `x` is a list with a reference to the vector `1:10`
 
@@ -288,9 +288,9 @@ tree(x)
 ref(x)
 ```
 
-# Object size
+## Object size
 
-## Ex. 1
+### Ex. 1
 
 In the following example, why are `object.size(y)` and `obj_size(y)` so radically different? Consult the documentation of `object.size()`.
 
@@ -302,11 +302,11 @@ obj_size(y)
 
 ```
 
-### Answer
+#### Answer
 
 `object.size(y)` and `obj_size(y)` are different because `object.size(y)` does not take into account the degree of memory sharing in the list.
 
-## Ex. 2
+### Ex. 2
 
 Take the following list. Why is its size somewhat misleading?
 
@@ -316,7 +316,7 @@ obj_size(funs)
 
 ```
 
-### Answer
+#### Answer
 
 The size are misleading because `mean`, `sd`, `var` are base R functions; the list does not contain exact copies, but only references. As in Ex. 1, this would be shown via `object.size()` and `obj_size()`
 
@@ -326,7 +326,7 @@ obj_size(funs)
 
 ```
 
-## Ex. 3
+### Ex. 3
 
 Predict the output of the following code:
 
@@ -366,9 +366,9 @@ obj_size(a, b)
 
 ```
 
-# Modify-in-place
+## Modify-in-place
 
-## Ex. 1
+### Ex. 1
 
 Explain why the following code doesn’t create a circular list.
 
@@ -377,7 +377,7 @@ x <- list()
 x[[1]] <- x
 ```
 
-### Answer
+#### Answer
 
 Because the 1st `x` refers to a different object than the 2nd `x` altogether. It's not a loop. Upon the second command, a new list is created, with its first element pointing to the list behind the first `x`, then the new list is bound to `x`.
 
@@ -393,7 +393,7 @@ lobstr::ref(x)
 lobstr::tree(x)
 ```
 
-## Ex. 2
+### Ex. 2
 
 Wrap the two methods for subtracting medians into two functions, then use the `bench` package to carefully compare their speeds. How does performance change as the number of columns increase?
 
@@ -417,7 +417,7 @@ method_2 <- function(x, medians) {
 }
 ```
 
-### Answer
+#### Answer
 
 Method 2 would be faster than method 1 since fewer copies are performed.
 
@@ -463,11 +463,11 @@ bench::mark(
 )
 ```
 
-## Ex. 3
+### Ex. 3
 
 What happens if you attempt to use tracemem() on an environment?
 
-### Answer
+#### Answer
 
 Experiment:
 
