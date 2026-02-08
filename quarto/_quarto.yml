@@ -14,9 +14,6 @@ book:
       - 2_chapter3.qmd
       - 3_chapter4.qmd
       - 4_chapter5.qmd
-      - 5_chapter6.qmd
-      - 6_chapter7.qmd
-      - 7_chapter8.qmd
     - part: "Functional programming"
     - part: "Object-oriented programming"
     - part: "Metaprogramming"
