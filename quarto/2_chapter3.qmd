@@ -5,9 +5,9 @@
 
 # Set knitr options
 knitr::opts_chunk$set(
-	echo = TRUE,
-	message = TRUE,
-	warning = TRUE
+  echo = TRUE,
+  message = TRUE,
+  warning = TRUE
 )
 
 # Load packages
@@ -373,14 +373,10 @@ x <- list(
 )
 
 # Test with nrow, ncol
-map(x,
-  \(x) c(nrow(x), ncol(x))
-)
+map(x, \(x) c(nrow(x), ncol(x)))
 
 # Test with NROW, NCOL
-map(x,
-  \(x) c(NROW(x), NCOL(x))
-)
+map(x, \(x) c(NROW(x), NCOL(x)))
 ```
 
 ## Ex. 3
@@ -528,9 +524,9 @@ f3 <- factor(letters, levels = rev(letters))
 f0 <- factor(letters)
 
 factors <- list(
-  f0 = f0, 
-  f1 = f1, 
-  f2 = f2, 
+  f0 = f0,
+  f1 = f1,
+  f2 = f2,
   f3 = f3
 )
 
@@ -636,7 +632,7 @@ With the case of dataframes, an error is given, since each row is meant to repre
 
 ```{r}
 #| error: TRUE
-x <- mtcars[c(1:4),]
+x <- mtcars[c(1:4), ]
 rownames(x) <- c("car", "car", "bike", "bicycle")
 ```
 

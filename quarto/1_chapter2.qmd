@@ -5,9 +5,9 @@
 
 # Set knitr options
 knitr::opts_chunk$set(
-	echo = TRUE,
-	message = TRUE,
-	warning = TRUE
+  echo = TRUE,
+  message = TRUE,
+  warning = TRUE
 )
 
 # Load packages
@@ -342,7 +342,7 @@ obj_size(a)
 
 b <- list(a, a)
 
-# This will be 8MB, which is mostly size of a 
+# This will be 8MB, which is mostly size of a
 obj_size(b)
 
 # This will be 8MB, which is mostly size of a
@@ -350,21 +350,21 @@ obj_size(a, b)
 
 b[[1]][[1]] <- 10
 
-# This will be 16MB, which is mostly size of modified b[[1]] and 
+# This will be 16MB, which is mostly size of modified b[[1]] and
 # unmodified b[[2]] pointing to a
 obj_size(b)
 
-# This will be 16MB, which is mostly size of modified b[[1]] and 
+# This will be 16MB, which is mostly size of modified b[[1]] and
 # unmodified b[[2]] pointing to a
 obj_size(a, b)
 
 b[[2]][[1]] <- 10
 
-# This will be 16MB, which is mostly size of modified b[[1]] and 
+# This will be 16MB, which is mostly size of modified b[[1]] and
 # modified b[[2]]
 obj_size(b)
 
-# This will be 24MB, which is mostly size of a, modified b[[1]], and 
+# This will be 24MB, which is mostly size of a, modified b[[1]], and
 # modified b[[2]]
 obj_size(a, b)
 
@@ -414,7 +414,7 @@ method_1 <- function(x, medians) {
 # Coerce dataframe to list prior to calculation of median
 method_2 <- function(x, medians) {
   y <- as.list(x)
-  
+
   for (i in seq_along(medians)) {
     y[[i]] <- y[[i]] - medians[[i]]
   }
@@ -428,7 +428,7 @@ Method 2 would be faster than method 1 since fewer copies are performed.
 ```{r}
 # For the following dataframe and medians
 x <- data.frame(matrix(
-  runif(5 * 1e4), 
+  runif(5 * 1e4),
   ncol = 5
 ))
 
@@ -437,7 +437,7 @@ medians <- vapply(
   median,
   numeric(1)
 )
-  
+
 # Compare performance
 bench::mark(
   method_1(x, medians),
@@ -450,7 +450,7 @@ The 2nd method seems to be 3x faster (likely due to needing fewer copies)
 ```{r}
 # For the following dataframe and medians
 x <- data.frame(matrix(
-  runif(500 * 1e4), 
+  runif(500 * 1e4),
   ncol = 500
 ))
 
@@ -459,7 +459,7 @@ medians <- vapply(
   median,
   numeric(1)
 )
-  
+
 # Compare performance
 bench::mark(
   method_1(x, medians),

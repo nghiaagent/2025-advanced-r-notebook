@@ -5,9 +5,9 @@
 
 # Set knitr options
 knitr::opts_chunk$set(
-	echo = TRUE,
-	message = TRUE,
-	warning = TRUE
+  echo = TRUE,
+  message = TRUE,
+  warning = TRUE
 )
 
 # Load packages
@@ -270,7 +270,8 @@ Why does `mtcars[1:20]` return an error? How does it differ from the similar `mt
 #| error: TRUE
 dim(mtcars)
 mtcars[1:20]
-```
+``
+`
 `mtcars[1:20, ]` gets the first 20 rows of `mtcars`, which is valid.
 
 ```{r}
@@ -380,7 +381,8 @@ mtcars[3, ]$cyl
 
 # Subset directly to variable and row
 mtcars[3, "cyl"]
-```
+`
+``
 **NB**: There are other code possible to get the same results, but the 3 main strategies are here.
 
 ## Ex. 2
