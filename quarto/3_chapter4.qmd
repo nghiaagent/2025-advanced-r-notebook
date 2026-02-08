@@ -3,29 +3,17 @@
 ```{r setup}
 #| include: FALSE
 
-# Set knitr options
-knitr::opts_chunk$set(
-  echo = TRUE,
-  message = TRUE,
-  warning = TRUE
-)
-
-# Load packages
-
-library(pacman)
-
-p_load(
-  lobstr,
-  tidyverse,
-  reactable,
-  vctrs
-)
-
 # Declare location
 here::i_am("quarto/3_chapter4.qmd")
 
+# Import packages
+library("lobstr")
+library("reactable")
+library("tidyverse")
+library("vctrs")
+
 # Set seed
-set.seed(6969)
+set.seed(67)
 
 ```
 
@@ -272,9 +260,17 @@ dim(mtcars)
 mtcars[1:20]
 ``
 `
-`mtcars[1:20, ]` gets the first 20 rows of `mtcars`, which is valid.
+`
+mtcars[1:20, ]
+` gets the first 20 rows of `
+mtcars
+`, which is valid.
 
-```{r}
+`
+``
+{
+  r
+}
 mtcars[1:20, ] %>%
   reactable(defaultPageSize = 4)
 ```
@@ -297,7 +293,7 @@ x <- list(
   matrix(1:25, nrow = 5, ncol = 5),
   matrix(1:24, nrow = 6, ncol = 4),
   matrix(1:24, nrow = 8, ncol = 3)
-  )
+)
 
 map(x, \(x) diag(x))
 ```
@@ -310,15 +306,15 @@ get_matrix_diagonals <- function(matrix) {
   select_length <- matrix %>%
     dim() %>%
     min()
-  
+
   # Build matrix identifying the diagonals
-  select <- 
+  select <-
     c(1:select_length, 1:select_length) %>%
     matrix(
       ncol = 2,
       byrow = FALSE
     )
-  
+
   # Filter matrix, return data
   matrix[select] %>%
     return()
@@ -382,14 +378,23 @@ mtcars[3, ]$cyl
 # Subset directly to variable and row
 mtcars[3, "cyl"]
 `
-``
+`
+`
 **NB**: There are other code possible to get the same results, but the 3 main strategies are here.
 
 ## Ex. 2
 
-Given a linear model, e.g., `mod <- lm(mpg ~ wt, data = mtcars)`, extract the residual degrees of freedom. Then extract the R squared from the model summary (`summary(mod)`)
+Given a linear model, e.g., `
+mod <- lm(mpg ~ wt, data = mtcars)
+`, extract the residual degrees of freedom. Then extract the R squared from the model summary (`
+summary(mod)
+`)
 
-```{r}
+`
+``
+{
+  r
+}
 mod <- lm(mpg ~ wt, data = mtcars)
 mod_summary <- summary(mod)
 ```

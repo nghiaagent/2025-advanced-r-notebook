@@ -3,30 +3,17 @@
 ```{r setup}
 #| include: FALSE
 
-# Set knitr options
-knitr::opts_chunk$set(
-  echo = TRUE,
-  message = TRUE,
-  warning = TRUE
-)
-
-# Load packages
-
-library(pacman)
-
-p_load(
-  lobstr,
-  bench,
-  here,
-  tidyverse
-)
-
 # Declare location
 here::i_am("quarto/1_chapter2.qmd")
 
-# Set seed
-set.seed(6969)
+# Import packages
+library("bench")
+library("here")
+library("lobstr")
+library("tidyverse")
 
+# Set seed
+set.seed(67)
 ```
 
 # Quiz

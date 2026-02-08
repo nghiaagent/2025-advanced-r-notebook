@@ -3,26 +3,14 @@
 ```{r setup}
 #| include: FALSE
 
-# Set knitr options
-knitr::opts_chunk$set(
-  echo = TRUE,
-  message = TRUE,
-  warning = TRUE
-)
-
-# Load packages
-
-library(pacman)
-
-p_load(
-  tidyverse
-)
-
 # Declare location
 here::i_am("quarto/5_chapter6.qmd")
 
+# Import packages
+library("tidyverse")
+
 # Set seed
-set.seed(6969)
+set.seed(67)
 ```
 
 # Quiz
@@ -409,7 +397,11 @@ Rewrite the following code snippets into prefix form:
 
 1 + (2 + 3)
 
-if (length(x) <= 5) x[[5]] else x[[n]]
+if (length(x) <= 5) {
+  x[[5]]
+} else {
+  x[[n]]
+}
 ```
 
 ### Answers
