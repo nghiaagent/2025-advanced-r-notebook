@@ -2,7 +2,10 @@
 format: live-html
 webr:
   packages:
+    - bench
     - here
+    - lobstr
+    - tidyverse
 ---
 
 {{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
@@ -14,12 +17,6 @@ webr:
 #| edit: false
 # Declare location
 here::i_am("quarto/1_chapter2.qmd")
-
-# Import packages
-library("bench")
-library("here")
-library("lobstr")
-library("tidyverse")
 
 # Set seed
 set.seed(67)
@@ -35,7 +32,6 @@ Given the following data frame, how do I create a new column called "3" that con
 
 ```{webr Quiz 1 Q}
 #| edit: false
-
 df <- data.frame(runif(3), runif(3))
 names(df) <- c(1, 2)
 ```
@@ -46,7 +42,6 @@ names(df) <- c(1, 2)
 
 ```{webr Quiz 1 A}
 #| autorun: true
-
 # Build object for question
 df <- data.frame(runif(3), runif(3))
 names(df) <- c(1, 2)
@@ -63,7 +58,6 @@ In the following code, how much memory does y occupy?
 
 ```{webr Quiz 2 Q}
 #| edit: false
-
 x <- runif(1e6)
 y <- list(x, x, x)
 
@@ -75,12 +69,11 @@ In this code, y takes slightly more memory than x, but not 3 times more (only 80
 
 ```{webr Quiz 2 A}
 #| autorun: true
-
 # Build object for quiz
 x <- runif(1e6)
 y <- list(x, x, x)
 
-
+# Quiz answers
 lobstr::obj_size(x)
 lobstr::obj_size(y)
 lobstr::obj_size(y) - lobstr::obj_size(x)
