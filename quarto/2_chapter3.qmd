@@ -2,31 +2,31 @@
 format: live-html
 webr:
   packages:
+    - DT
+    - gt
     - here
+    - lobstr
+    - reactable
+    - tidyverse
 ---
 
 {{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 # Vectors
 
-```{r setup}
+```{webr setup}
 #| include: FALSE
 
 # Declare location
 here::i_am("quarto/2_chapter3.qmd")
-
-# Import packages
-library("DT")
-library("gt")
-library("lobstr")
-library("reactable")
-library("tidyverse")
 
 # Set seed
 set.seed(67)
 ```
 
 ## Quiz
+
+More details are available in the [Vectors Quiz](https://adv-r.hadley.nz/vectors-chap.html#quiz) book chapter.
 
 ### Quiz 1
 
@@ -36,19 +36,22 @@ What are the four common types of atomic vectors? What are the two rare types?
 
 The 4 common types are `logical`, `double`, `integer`, and `character`
 
-```{r}
+```{webr Ex 3.1.1A}
+#| autorun: true
+# Build and show types of each vector
 list(
-  c(TRUE, FALSE),
-  c(1.41, 5.45),
-  c(1L, 2L),
-  c("banana", "apple")
-) %>%
+  "logical" = c(TRUE, FALSE),
+  "double" = c(1.41, 5.45),
+  "integer" = c(1L, 2L),
+  "character" = c("banana", "apple")
+) |>
   map(typeof)
 ```
 
 The 2 rare types are `complex` (depicting complex numbers) and `raw` (binary data, displayed as hex values).
 
-```{r}
+```{webr Ex 3.1.1B}
+#| autorun: true
 # Build example complex vector
 vec_complex <- complex(2)
 vec_complex[[1]] <- 1
@@ -59,11 +62,9 @@ vec_complex[[2]] <- 2 + 3i
 vec_complex
 
 ## Check type
-vec_complex %>%
+vec_complex |>
   typeof()
-```
 
-```{r}
 # Build example raw vector
 vec_raw <- raw(2)
 vec_raw[[1]] <- as.raw(15)
@@ -74,15 +75,15 @@ vec_raw[[2]] <- charToRaw("P")
 vec_raw
 
 ## Check type
-vec_raw %>%
+vec_raw |>
   typeof()
 
 ## See stored data as decimal integers
-vec_raw %>%
+vec_raw |>
   as.integer()
 
 ## Convert hex 0x50 to character
-vec_raw[[2]] %>%
+vec_raw[[2]] |>
   rawToChar()
 ```
 
@@ -96,12 +97,16 @@ Attributes are metadata attached to atomic vectors to create more complex data s
 
 For example:
 
-```{r}
+```{webr Ex 3.1.2A}
+#| autorun: true
+# Define vector example
 x <- c(1:6)
 
 # Turn above vector into matrix (note vectors are created column-wise)
 dim(x) <- c(2, 3)
-x
+
+# Show new vector
+print(x)
 ```
 
 ### Quiz 3
@@ -110,7 +115,7 @@ How is a list different from an atomic vector? How is a matrix different from a 
 
 #### Answers
 
--   A list is a vector of references to objects. These objects can be vectors themselves. Lists don't contain actual "data". Whereas vectors contain data.
+-   A list is a vector of references to objects. These objects can be vectors themselves. Lists don't contain actual "data". Whereas atomic vectors contain data themselves.
 
 -   A matrix is an atomic vector with a `dim` attribute. A data frame is a list of atomic vectors. All data in a matrix must be the same type, where each column in a data frame may have a different type.
 
@@ -122,7 +127,9 @@ Can you have a list that is a matrix? Can a data frame have a column that is a m
 
 List that is a matrix: By assigning dimensions to a list:
 
-```{r}
+```{webr Ex 3.1.4A}
+#| autorun: true
+# Define list that is a matrix
 x <- list(
   c(1, 2),
   c(3, 4),
@@ -132,25 +139,38 @@ x <- list(
 
 dim(x) <- c(2, 2)
 
+# Show new vector
+print(x)
+
+# Show structure
 str(x)
-tree(x)
+lobstr::tree(x)
 x
 ```
 
-Matrix a column of a dataframe: By assigning (making sure there are enough rows):
+Matrix as a column of a dataframe: By assigning (making sure there are enough rows):
 
-```{r}
-x <- data.frame(
-  names = c("a", "b", "c")
-)
+```{webr Ex 3.1.4B}
+#| autorun: true
+# Define dataframe with matrix column
+x <- data.frame(names = c("a", "b", "c"))
 x$val <- matrix(c(1:15), nrow = 3, ncol = 5)
 
+# Show structure of this dataframe
 str(x)
-# Note that rendering of this dataframe is inconsistent
+
+# Note that rendering of this dataframe is inconsistent between table viewers
+message("Printing with print()")
 print(x)
-reactable(x)
-datatable(x)
-gt(x)
+
+message("Printing with reactable()")
+reactable::reactable(x)
+
+message("Printing with datatable()")
+DT::datatable(x)
+
+message("Printing with gt()")
+gt::gt(x)
 ```
 
 ### Quiz 5
@@ -163,25 +183,31 @@ They don't coerce strings to factors, print more nicely, and has more robust sub
 
 ## Atomic vectors
 
+More details are available in the [Atomic vectors](https://adv-r.hadley.nz/vectors-chap.html#atomic-vectors) book chapter.
+
 ### Ex. 1
 
-How do you create raw and complex scalars? (See ?raw and ?complex.)
+How do you create raw and complex scalars? (See `?raw` and `?complex`.)
 
 #### Answers
 
-Many ways to create raw vectors:
+There are many ways to create raw vectors:
 
-```{r}
+```{webr Ex 3.2.1A}
+#| autorun: true
 # Create vector containing raw data
 x <- c(as.raw(40), as.raw(50))
 
+# Show vector and type
+message("Showing content of c(as.raw(40), as.raw(50))")
 x
 typeof(x)
 
 # Create vector, then coerce it to raw
-x <- c(40, 50) %>%
-  as.raw()
+x <- as.raw(c(40, 50))
 
+# Show vector and type
+message("Showing type of as.raw(c(40, 50))")
 x
 typeof(x)
 
@@ -190,17 +216,21 @@ x <- raw(2)
 x[[1]] <- as.raw(40)
 x[[2]] <- as.raw(50)
 
+# Show vector and type
+message("Showing content of raw(2)")
 x
 typeof(x)
 ```
 
-Many ways to create complex vectors
+There are also many ways to create complex vectors:
 
-```{r}
-
+```{webr Ex 3.2.1B}
+#| autorun: true
 # Create vector containing complex data
 x <- c(1 + 6i, 1.7 + 3.2i)
 
+# Show vector and type
+message("Showing content of c(1 + 6i, 1.7 + 3.2i)")
 x
 typeof(x)
 
@@ -208,12 +238,16 @@ typeof(x)
 ## Note: no imaginary part, initially
 x <- c(1, 1.7)
 
+## Show vector and type before coercion
+message("Showing content of c(1, 1.7)")
 x
 typeof(x)
 
-x <- x %>%
+x <- x |>
   as.complex()
 
+## Show vector and type after coercion
+message("Showing type of as.complex(c(1, 1.7))")
 x
 typeof(x)
 
@@ -222,6 +256,8 @@ x <- complex(2)
 x[[1]] <- 1 + 6i
 x[[2]] <- 1.7 + 3.2i
 
+## Show vector and type
+message("Showing content of complex(2)")
 x
 typeof(x)
 ```
@@ -230,7 +266,8 @@ typeof(x)
 
 Test your knowledge of the vector coercion rules by predicting the output of the following uses of `c()`:
 
-```{r}
+```{webr Ex 3.2.2Q}
+#| edit: false
 #| eval: false
 c(1, FALSE)
 c("a", 1)
@@ -239,15 +276,26 @@ c(TRUE, 1L)
 
 #### Answers
 
-```{r}
+In order, these vectors will be coerced to their most basic type:
+- Coerced to double
+- Coerced to character
+- Coerced to integer
+
+```{webr Ex 3.2.2A}
+#| autorun: true
 # Coerced to double
-c(1, FALSE) %>%
+message("Showing type of c(1, FALSE)")
+c(1, FALSE) |>
   typeof()
+
 # Coerced to character
-c("a", 1) %>%
+message("Showing type of c(\"a\", 1)")
+c("a", 1) |>
   typeof()
+
 # Coerced to integer
-c(TRUE, 1L) %>%
+message("Showing type of c(TRUE, 1L)")
+c(TRUE, 1L) |>
   typeof()
 ```
 
@@ -259,19 +307,19 @@ Why is `1 == "1"` true? Why is `-1 < FALSE` true? Why is `"one" < 2` false?
 
 Because both sides of the argument are coerced (in the order of logical - numeric - character) prior to comparison.
 
-```{r}
+```{webr Ex 3.2.3A}
 # First comparison: Both sides coerced to character.
-c(1, "1") %>%
+c(1, "1") |>
   typeof()
 
 # Second comparison: Both sides coerced to numeric
-c(-1, FALSE) %>%
+c(-1, FALSE) |>
   typeof()
 
 c(-1, FALSE)
 
 # Third comparison: Both sides coerced to character, comparison not possible
-c("one", 2) %>%
+c("one", 2) |>
   typeof()
 
 c("one", 2)
@@ -286,7 +334,8 @@ Why is the default missing value, NA, a logical vector? What’s special about l
 
 NA is automatically set to the strictest type possible, allowing it to be coerced following the rest of the vector. Where coercion is not needed, it defaults to the strictest type of logical.
 
-```{r}
+```{webr Ex 3.2.4A}
+#| autorun: true
 typeof(NA)
 typeof(NA_integer_)
 ```
@@ -301,7 +350,8 @@ Precisely what do `is.atomic()`, `is.numeric()`, and `is.vector()` test for?
 -   `is.numeric())` checks whether the data is intepretable as numbers (base type `double` or `integer`)
 -   `is.vector()` checks whether the provided vector (includes list) have no attributes other than names. Since a matrix is a vector with the `dim` attribute, it would fail this test.
 
-```{r}
+```{webr Ex 3.2.5A}
+#| autorun: true
 # Test a few scenarios
 list(
   list = list(),
@@ -315,7 +365,7 @@ list(
   double = c(2.4, 5.2),
   character = c("cook", "no"),
   factor = c("red", "blue")
-) %>%
+) |>
   map(\(x) {
     c(
       is.atomic(x),
@@ -327,6 +377,8 @@ list(
 
 ## Attributes
 
+More details are available in the [Attributes](https://adv-r.hadley.nz/vectors-chap.html#attributes) book chapter.
+
 ### Ex. 1
 
 How is `setNames()`implemented? How is `unname()` implemented? Read the source code.
@@ -335,13 +387,15 @@ How is `setNames()`implemented? How is `unname()` implemented? Read the source c
 
 `setNames` is simply an inline version of the `names` attribute setter function.
 
-```{r}
+```{webr Ex 3.3.1A1}
+#| autorun: true
 setNames
 ```
 
 `unname()` is more complicated. - If the object has a `names` attribute, set it to NULL - If the object has a `dimnames` attribute, is a dataframe, and force is `TRUE` set it to NULL
 
-```{r}
+```{webr Ex 3.3.1A2}
+#| autorun: true
 unname
 ```
 
@@ -353,7 +407,8 @@ What does `dim()` return when applied to a 1-dimensional vector? When might you 
 
 `dim()` returns NULL when applied to a 1-dimensional vector.
 
-```{r}
+```{webr Ex 3.3.2A1}
+#| autorun: true
 x <- c(1, 2, 3)
 dim(x)
 ```
@@ -362,7 +417,8 @@ dim(x)
 
 The length of the 1st dimension is the number of rows, the length of the 2nd dimension is the number of columns.
 
-```{r}
+```{webr Ex 3.3.2A2}
+#| autorun: true
 x <- list(
   vector = c(1:18),
   matrix = matrix(1:18, nrow = 6, ncol = 3),
@@ -380,7 +436,8 @@ map(x, \(x) c(NROW(x), NCOL(x)))
 
 How would you describe the following three objects? What makes them different from 1:5?
 
-```{r}
+```{webr Ex 3.3.3Q} 
+#| edit: false
 x1 <- array(1:5, c(1, 1, 5))
 x2 <- array(1:5, c(1, 5, 1))
 x3 <- array(1:5, c(5, 1, 1))
@@ -395,7 +452,8 @@ x4 <- c(1:5)
 
 They are 3-dimensional objects with a dim attribute, whereas `1:5` does not.
 
-```{r}
+```{webr Ex 3.3.3A}
+#| autorun: true
 x <- list(
   x1,
   x2,
@@ -411,7 +469,8 @@ map(x, \(x) str(x))
 
 An early draft used this code to illustrate `structure()`:
 
-```{r}
+```{webr Ex 3.3.4Q}
+#| edit: false
 structure(1:5, comment = "my attribute")
 ```
 
@@ -421,7 +480,8 @@ But when you print that object you don’t see the comment attribute. Why? Is th
 
 By default, the comment attribute is not printed. See `?comment`
 
-```{r}
+```{webr Ex 3.3.4A}
+#| autorun: true
 # Create test object
 x <- structure(1:5, comment = "my attribute")
 
@@ -437,6 +497,8 @@ print(x)
 
 ## S3 atomic vectors
 
+More details are available in the [S3 atomic vectors](https://adv-r.hadley.nz/vectors-chap.html#s3-atomic-vectors) book chapter.
+
 ### Ex. 1
 
 What sort of object does `table()` return? What is its type? What attributes does it have? How does the dimensionality change as you tabulate more variables?
@@ -445,10 +507,11 @@ What sort of object does `table()` return? What is its type? What attributes doe
 
 `table()` returns a contingency table (technically an array) detailing the counts of each combinations of a factor or vector. Number of array dimensions increase as the number of variables in the contingency table increases.
 
-```{r}
+```{webr Ex 3.4.1A}
+#| autorun: true
 # Test with mtcars dataset
-mtcars %>%
-  reactable(defaultPageSize = 4)
+mtcars |>
+  reactable::reactable(defaultPageSize = 4)
 
 # Create list of all contingency tables
 vars <- list(
@@ -458,10 +521,10 @@ vars <- list(
   c("cyl", "am", "gear", "carb")
 )
 
-contingency_tables <- vars %>%
+contingency_tables <- vars |>
   map(\(vars) {
-    mtcars %>%
-      dplyr::select(all_of(vars)) %>%
+    mtcars |>
+      dplyr::select(all_of(vars)) |>
       table()
   })
 
@@ -476,7 +539,8 @@ map(
 
 What happens to a factor when you modify its levels?
 
-```{r}
+```{webr Ex 3.4.2Q}
+#| edit: false
 f1 <- factor(letters)
 levels(f1) <- rev(levels(f1))
 ```
@@ -485,7 +549,8 @@ levels(f1) <- rev(levels(f1))
 
 The underlying integer vector is unchanged, but the reversed levels attribute cause the factor to be reversed. In effect, the data is changed. So don't use `rev()` for this purpose...
 
-```{r}
+```{webr Ex 3.4.2A}
+#| autorun: true
 # Profile original factor
 f1 <- factor(letters)
 
@@ -503,7 +568,8 @@ as.integer(f1)
 
 What does this code do? How do `f2` and `f3` differ from `f1`?
 
-```{r}
+```{webr Ex 3.4.3Q}
+#| edit: false
 f2 <- rev(factor(letters))
 f3 <- factor(letters, levels = rev(letters))
 ```
@@ -516,7 +582,8 @@ f3 <- factor(letters, levels = rev(letters))
 
 -   `f3`: The underlying integer vector is reversed, the factors are also reversed. Hence, the data is (in effect) unchanged.
 
-```{r}
+```{webr Ex 3.4.3A}
+#| autorun: true
 # Create a completely unchanged factor for reference
 f0 <- factor(letters)
 
@@ -531,15 +598,17 @@ factors <- list(
 factors
 
 # f2 and f3 are reversed in the integer vector
-factors %>%
+factors |>
   map(as.integer)
 
 # f1 and f3 has levels reversed
-factors %>%
+factors |>
   map(levels)
 ```
 
 ## Lists
+
+More details are available in the [Lists](https://adv-r.hadley.nz/vectors-chap.html#lists) book chapter.
 
 ### Ex. 1
 
@@ -564,7 +633,8 @@ Compare and contrast `c()` and `unlist()` when combining a date and date-time in
 
 #### Answers
 
-```{r}
+```{webr Ex 3.5.3A}
+#| autorun: true
 # Experiment: Set up vectors
 date <- c(
   as.Date("1970-01-01"),
@@ -603,19 +673,26 @@ typeof(b)
 
 ## Data frames and tibbles
 
+More details are available in the [Data frames and tibbles](https://adv-r.hadley.nz/vectors-chap.html#tibble) book chapter.
+
 ### Ex. 1
 
 Can you have a data frame with zero rows? What about zero columns?
 
 #### Answers
 
-```{r}
+```{webr Ex 3.6.1A1}
+#| autorun: true
 x <- data.frame()
+x
+print(x)
+str(x)
 ```
 
 Yes and yes, a dataframe can have no rows and columns. This can also occur via subsetting of dataframes.
 
-```{r}
+```{webr Ex 3.6.1A2}
+#| autorun: true
 mtcars[0, 0]
 ```
 
@@ -627,7 +704,8 @@ What happens if you attempt to set rownames that are not unique?
 
 With the case of dataframes, an error is given, since each row is meant to represent an unique sample.
 
-```{r}
+```{webr Ex 3.6.2A}
+#| autorun: true
 #| error: TRUE
 x <- mtcars[c(1:4), ]
 rownames(x) <- c("car", "car", "bike", "bicycle")
@@ -641,14 +719,17 @@ If df is a data frame, what can you say about `t(df)`, and `t(t(df))`? Perform s
 
 First, the dataframe is coerced to a matrix. At this step, all values are coerced to the same type.
 
-```{r}
+```{webr Ex 3.6.3A1}
+#| autorun: true
+# Show the appropriate method
 getAnywhere(t.data.frame)
 ```
 
-```{r}
+```{webr Ex 3.6.3A2}
+#| autorun: true
 # Experiment with diamonds
-diamonds[1:5, ] %>%
-  reactable(defaultPageSize = 4)
+diamonds[1:5, ] |>
+  reactable::reactable(defaultPageSize = 4)
 
 # Experiment with dataframe containing list columns
 df_experiment <- tibble(
@@ -661,34 +742,35 @@ df_experiment <- tibble(
 )
 ```
 
-```{r}
+```{webr Ex 3.6.3A3}
+#| autorun: true
 # Transpose only numeric. Data is of type double, unchanged.
-x <- diamonds[1:5, c("depth", "x")] %>%
+x <- diamonds[1:5, c("depth", "x")] |>
   t()
 
 typeof(x)
 x
 
 # Transpose again. Data is of type double, unchanged.
-x <- x %>%
+x <- x |>
   t()
 
 typeof(x)
 x
 
 # Transpose mix of numeric and factors. Data is coerced to type character.
-x <- diamonds[1:5, c("depth", "color")] %>%
+x <- diamonds[1:5, c("depth", "color")] |>
   t()
 
 # Transpose again. Data is coerced to type character.
-x <- x %>%
+x <- x |>
   t()
 
 typeof(x)
 x
 
 # Transport df containing list-cols. df is coerced to a matrix (list with dimensions) instead.
-x <- df_experiment %>%
+x <- df_experiment |>
   t()
 
 typeof(x)
@@ -701,27 +783,28 @@ What does `as.matrix()` do when applied to a data frame with columns of differen
 
 #### Answers
 
-```{r}
+```{webr Ex 3.6.4A}
+#| autorun: true
 # as.matrix coerces to most general type (character)
 x <- as.matrix(diamonds)
 typeof(x)
-x %>%
-  reactable(defaultPageSize = 4)
+x |>
+  reactable::reactable(defaultPageSize = 4)
 
 # data.matrix replace factor by their internal codes, then coerce to numeric.
 y <- data.matrix(diamonds)
 typeof(y)
-y %>%
-  reactable(defaultPageSize = 4)
+y |>
+  reactable::reactable(defaultPageSize = 4)
 
 # data.matrix coerces characters to factors, then do the usual replacing.
-z <- diamonds %>%
+z <- diamonds |>
   mutate(
-    cut = cut %>%
+    cut = cut |>
       as.character(),
-    color = color %>%
+    color = color |>
       as.character(),
-    clarity = clarity %>%
+    clarity = clarity |>
       as.character(),
   )
 
@@ -729,8 +812,8 @@ str(z)
 
 z <- data.matrix(z)
 typeof(z)
-z %>%
-  reactable(defaultPageSize = 4)
+z |>
+  reactable::reactable(defaultPageSize = 4)
 ```
 
 In summary, `as.matrix()` coerces dataframes to characters, `data.matrix()` coerces dataframes to numeric.
