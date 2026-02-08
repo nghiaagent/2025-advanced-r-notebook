@@ -3,27 +3,15 @@
 ```{r setup}
 #| include: FALSE
 
-# Set knitr options
-knitr::opts_chunk$set(
-  echo = TRUE,
-  message = TRUE,
-  warning = TRUE
-)
-
-# Load packages
-
-library(pacman)
-
-p_load(
-  tidyverse,
-  lobstr
-)
-
 # Declare location
 here::i_am("quarto/4_chapter5.qmd")
 
+# Import packages
+library("lobstr")
+library("tidyverse")
+
 # Set seed
-set.seed(6969)
+set.seed(67)
 ```
 
 # Quiz
@@ -102,11 +90,7 @@ What does `switch("x", x = , y = 2, z = 3)` return?
 `switch` evaluates the matched element or the first following non-missing argument. Since `x` is missing, the next argument `y` is evaluated, yielding `2`.
 
 ```{r}
-switch("x",
-  x = ,
-  y = 2,
-  z = 3
-)
+switch("x", x = , y = 2, z = 3)
 ```
 
 # Choices
@@ -142,10 +126,18 @@ Why does the following code work?
 
 ```{r}
 x <- 1:10
-if (length(x)) "not empty" else "empty"
+if (length(x)) {
+  "not empty"
+} else {
+  "empty"
+}
 
 x <- numeric()
-if (length(x)) "not empty" else "empty"
+if (length(x)) {
+  "not empty"
+} else {
+  "empty"
+}
 ```
 
 ### Answers
