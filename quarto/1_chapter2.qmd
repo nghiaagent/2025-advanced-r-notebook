@@ -9,9 +9,9 @@ webr:
 
 # Names and values
 
-```{r setup}
+```{webr setup}
 #| include: FALSE
-
+#| edit: false
 # Declare location
 here::i_am("quarto/1_chapter2.qmd")
 
@@ -27,11 +27,15 @@ set.seed(67)
 
 ## Quiz
 
+More details are available in the [textbook section](https://adv-r.hadley.nz/names-values.html#quiz).
+
 ### Quiz 1
 
 Given the following data frame, how do I create a new column called "3" that contains the sum of 1 and 2? You may only use `$`, not `[[`. What makes 1, 2, and 3 challenging as variable names?
 
 ```{webr Quiz 1 Q}
+#| edit: false
+
 df <- data.frame(runif(3), runif(3))
 names(df) <- c(1, 2)
 ```
@@ -41,8 +45,14 @@ names(df) <- c(1, 2)
 `1` and `2` and `3` are challenging as variable names since they are non-syntactic names. Though they can still be used (here) via coercing:
 
 ```{webr Quiz 1 A}
-df$`3` <- df$`1` + df$`2`
+#| autorun: true
 
+# Build object for question
+df <- data.frame(runif(3), runif(3))
+names(df) <- c(1, 2)
+
+# Solution
+df$`3` <- df$`1` + df$`2`
 head(df)
 
 ```
@@ -51,7 +61,9 @@ head(df)
 
 In the following code, how much memory does y occupy?
 
-```{r Quiz 2 Q}
+```{webr Quiz 2 Q}
+#| edit: false
+
 x <- runif(1e6)
 y <- list(x, x, x)
 
@@ -61,7 +73,14 @@ y <- list(x, x, x)
 
 In this code, y takes slightly more memory than x, but not 3 times more (only 80 bytes). This is because y is a list containing 3 references to the 1 vector underlying x. List structure takes up 80 bytes, the vector takes up 8MB.
 
-```{r Quiz 2 A}
+```{webr Quiz 2 A}
+#| autorun: true
+
+# Build object for quiz
+x <- runif(1e6)
+y <- list(x, x, x)
+
+
 lobstr::obj_size(x)
 lobstr::obj_size(y)
 lobstr::obj_size(y) - lobstr::obj_size(x)
