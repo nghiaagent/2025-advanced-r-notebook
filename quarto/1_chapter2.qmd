@@ -49,7 +49,6 @@ names(df) <- c(1, 2)
 # Solution
 df$`3` <- df$`1` + df$`2`
 head(df)
-
 ```
 
 ### Quiz 2
@@ -60,7 +59,6 @@ In the following code, how much memory does y occupy?
 #| edit: false
 x <- runif(1e6)
 y <- list(x, x, x)
-
 ```
 
 #### Answer
@@ -74,10 +72,14 @@ x <- runif(1e6)
 y <- list(x, x, x)
 
 # Quiz answers
+message("Size of x: ")
 lobstr::obj_size(x)
-lobstr::obj_size(y)
-lobstr::obj_size(y) - lobstr::obj_size(x)
 
+message("Size of y: ")
+lobstr::obj_size(y)
+
+message("Difference in size: ")
+lobstr::obj_size(y) - lobstr::obj_size(x)
 ```
 
 ### Quiz 3
@@ -118,9 +120,16 @@ c <- b
 d <- 1:10
 
 # Perform proof
+message("Address of a: ")
 lobstr::obj_addr(a)
+
+message("Address of b: ")
 lobstr::obj_addr(b)
+
+message("Address of c: ")
 lobstr::obj_addr(c)
+
+message("Address of d: ")
 lobstr::obj_addr(d)
 
 ```
@@ -144,18 +153,23 @@ All expressions above point to the same function. We can investigate using the `
 
 ```{webr Ex 2.2.2 A}
 #| autorun: true
+message("Address of mean: ")
 mean |>
   lobstr::obj_addr()
 
+message("Address of base::mean: ")
 base::mean |>
   lobstr::obj_addr()
 
+message("Address of get(\"mean\"): ")
 get("mean") |>
   lobstr::obj_addr()
 
+message("Address of evalq(mean): ")
 evalq(mean) |>
   lobstr::obj_addr()
 
+message("Address of match.fun(\"mean\"): ")
 match.fun("mean") |>
   lobstr::obj_addr()
 ```
@@ -245,9 +259,11 @@ x[[3]] <- 4
 
 ```{webr Ex 2.2.6 A}
 #| autorun: true
+message("Initial object: ")
 x <- c(1L, 2L, 3L)
 lobstr::tree(x)
 
+message("After modification: ")
 x[[3]] <- 4
 lobstr::tree(x)
 ```
@@ -307,6 +323,7 @@ x[[2]] <- x
 ```{webr Ex 2.2.8 A1}
 #| autorun: true
 # First object
+message("Initial object: ")
 x <- list(1:10)
 str(x)
 tree(x)
@@ -316,6 +333,7 @@ ref(x)
 ```{webr Ex 2.2.8 A2}
 #| autorun: true
 # Second object
+message("After modification: ")
 x <- list(1:10)
 x[[2]] <- x
 str(x)
@@ -352,7 +370,7 @@ obj_size(funs)
 
 #### Answer
 
-The size are misleading because `mean`, `sd`, `var` are base R functions; the list does not contain exact copies, but only references to their `C` implementations. As in Ex. 1, this would be shown via `object.size()` and `obj_size()`
+The size are misleading because `mean`, `sd`, `var` are base R functions; the list does not contain exact copies, but only references to their `C` implementations. As in Ex. 1, this would be shown via `object.size()` and `obj_size()`. The `obj_size()` function includes the environment needed to run the function, which is why it is larger than `object.size()`.
 
 ```{webr Ex 2.2.10 A}
 #| autorun: true
@@ -411,27 +429,34 @@ obj_size(a, b)
 #| autorun: true
 # Part 1
 a <- runif(1e6)
+message("Size of a: ")
 obj_size(a)
 
 # Part 2
 b <- list(a, a)
+message("Size of b: ")
 obj_size(b)
 
 # Part 3
+message("Size of a and b: ")
 obj_size(a, b)
 
 # Part 4
 b[[1]][[1]] <- 10
+message("Size of b after modification: ")
 obj_size(b)
 
 # Part 5
+message("Size of a and b: ")
 obj_size(a, b)
 
 # Part 6
 b[[2]][[1]] <- 10
+message("Size of b after modification: ")
 obj_size(b)
 
 # Part 7
+message("Size of a and b: ")
 obj_size(a, b)
 ```
 
@@ -454,11 +479,13 @@ Because the 1st `x` refers to a different object than the 2nd `x` altogether. Up
 ```{webr Ex 2.3.1 A}
 #| autorun: true
 # Profile the 1st x
+message("Initial object: ")
 x <- list()
 lobstr::ref(x)
 lobstr::tree(x)
 
 # Profile the 2nd x
+message("After modification: ")
 x[[1]] <- x
 lobstr::ref(x)
 lobstr::tree(x)
@@ -529,7 +556,7 @@ bench::mark(
 )
 ```
 
-The 2nd method seems to be 3x faster (likely due to needing fewer copies). We can test this again on a larger dataset.
+The 2nd method seems to be 10x faster (likely due to needing fewer copies). We can test this again on a larger dataset.
 
 ```{webr Ex 2.3.2 A2}
 #| autorun: true
