@@ -5,6 +5,7 @@ webr:
     - bench
     - here
     - lobstr
+    - reactable
     - tidyverse
 ---
 
@@ -24,7 +25,7 @@ set.seed(67)
 
 ## Quiz
 
-More details are available in the [textbook section](https://adv-r.hadley.nz/names-values.html#quiz).
+More details are available in the [Names and values Quiz](https://adv-r.hadley.nz/names-values.html#quiz) book chapter.
 
 ### Quiz 1
 
@@ -63,7 +64,7 @@ y <- list(x, x, x)
 
 #### Answer
 
-In this code, y takes slightly more memory than x, but not 3 times more (only 80 bytes). This is because y is a list containing 3 references to the 1 vector underlying x. List structure takes up 80 bytes, the vector takes up 8MB.
+In this code, y takes slightly more memory than x, but not 3 times more (only 48 bytes). This is because y is a list containing 3 references to the 1 vector underlying x. List structure takes up 48 bytes, the vector takes up 8MB.
 
 ```{webr Quiz 2 A}
 #| autorun: true
@@ -99,17 +100,20 @@ b[[1]] <- 10
 
 ## Binding basics
 
+More details are available in the [Names and values Binding basics](https://adv-r.hadley.nz/names-values.html#binding-basics) book chapter.
+
 ### Ex. 1
 
 Explain the relationship between `a`, `b`, `c`, and `d` in the following code:
 
 #### Answers
 
-This can be determined using their object addresses:
--   `a` points to a vector
--   `b` points to the same vector as `a`
--   `c` points to the same vector as `a` and `b`
--   `d` points to a different vector
+This can be determined using their object addresses:  
+
+- `a` points to a vector
+- `b` points to the same vector as `a`
+- `c` points to the same vector as `a` and `b`
+- `d` points to a different vector
 
 ```{webr Ex 2.2.1}
 #| autorun: true
@@ -136,7 +140,7 @@ lobstr::obj_addr(d)
 
 ### Ex. 2
 
-The following code accesses the mean function in multiple ways. Do they all point to the same underlying function object? Verify this with `lobstr::obj_addr()`.
+The following code accesses the `mean` function in multiple ways. Do they all point to the same underlying function object? Verify this with `lobstr::obj_addr()`.
 
 ```{webr Ex 2.2.2 Q}
 #| eval: false
@@ -201,12 +205,12 @@ What rules does `make.names()` use to convert non-syntactic names into syntactic
 
 The rules for `make.names()` are:
 
--   Prepend `X` if first character is invalid
--   Translate all invalid characters to `.`
--   Append `.` if name matches R keyword
--   Deduplicate names
+- Prepend `X` if first character is invalid
+- Translate all invalid characters to `.`
+- Append `.` if name matches R keyword
+- Deduplicate names
 
-The function itself is written in `C`.
+The function itself is written in `C`. The accessible R function is a wrapper around the C function that allows it to be vectorised and ensures the newly formatted names are unique.
 
 ```{webr Ex 2.2.4 A}
 #| autorun: true
@@ -222,6 +226,9 @@ I slightly simplified the rules that govern syntactic names. Why is `.123e1` not
 `.123e1` is not a syntactic name because the remaining text following `.` can be intepreted as a scientific number `123e1 = 1.23`
 
 ## Copy-on-modify
+
+More details are available in the [Names and values Copy-on-modify](https://adv-r.hadley.nz/names-values.html#copy-on-modify) book chapter.
+
 
 ### Ex. 1
 
@@ -239,7 +246,7 @@ cat(tracemem(1:10), "\n")
 
 The purpose of `tracemem()` is to tag a named object and see when its underlying data structure is copied. `1:10` is not a named object, so `tracemem()` wouldn't be useful.
 
-(In the case of this notebook, it is not useful because webR does not support memory profiling.)
+(In the case of this notebook, it is not useful also because webR does not support memory profiling.)
 
 ### Ex. 2
 
@@ -296,13 +303,13 @@ c <- list(b, a, 1:10)
 
 # Perform proof
 message("Showing relationship of a")
-tree(a)
+lobstr::tree(a)
 
 message("Showing relationship of b")
-tree(b)
+lobstr::tree(b)
 
 message("Showing relationship of c")
-tree(c)
+lobstr::tree(c)
 ```
 
 ### Ex. 4
@@ -326,22 +333,21 @@ x[[2]] <- x
 message("Initial object: ")
 x <- list(1:10)
 str(x)
-tree(x)
-ref(x)
-```
+lobstr::tree(x)
+lobstr::ref(x)
 
-```{webr Ex 2.2.8 A2}
-#| autorun: true
 # Second object
 message("After modification: ")
 x <- list(1:10)
 x[[2]] <- x
 str(x)
-tree(x)
-ref(x)
+lobstr::tree(x)
+lobstr::ref(x)
 ```
 
 ## Object size
+
+More details are available in the [Names and values Object size](https://adv-r.hadley.nz/names-values.html#object-size) book chapter.
 
 ### Ex. 1
 
@@ -351,7 +357,7 @@ In the following example, why are `object.size(y)` and `obj_size(y)` so radicall
 #| autorun: true
 y <- rep(list(runif(1e4)), 100)
 object.size(y)
-obj_size(y)
+lobstr::obj_size(y)
 ```
 
 #### Answer
@@ -365,7 +371,7 @@ Take the following list. Why is its size somewhat misleading?
 ```{webr Ex 2.2.10 Q}
 #| eval: false
 funs <- list(mean, sd, var)
-obj_size(funs)
+lobstr::obj_size(funs)
 ```
 
 #### Answer
@@ -379,7 +385,7 @@ funs <- list(mean, sd, var)
 
 # Perform proof
 object.size(funs)
-obj_size(funs)
+lobstr::obj_size(funs)
 ```
 
 ### Ex. 3
@@ -390,77 +396,120 @@ Predict the output of the following code:
 #| eval: false
 # Part 1
 a <- runif(1e6)
-obj_size(a)
+lobstr::obj_size(a)
 
 # Part 2
 b <- list(a, a)
-obj_size(b)
+lobstr::obj_size(b)
 
 # Part 3
-obj_size(a, b)
+lobstr::obj_size(a, b)
 
 # Part 4
 b[[1]][[1]] <- 10
-obj_size(b)
+lobstr::obj_size(b)
 
 # Part 5
-obj_size(a, b)
+lobstr::obj_size(a, b)
 
 # Part 6
 b[[2]][[1]] <- 10
-obj_size(b)
+lobstr::obj_size(b)
 
 # Part 7
-obj_size(a, b)
+lobstr::obj_size(a, b)
 
 ```
 
 #### Answer
 
-1. Object size will be 8MB
-2. Object size will be 8MB
-3. Object size will be 8MB
-4. Object size will be 16MB
-5. Object size will be 16MB
-6. Object size will be 16MB
-7. Object size will be 24MB
+The object sizes are:
 
-```{webr Ex 2.2.11 A}
+1. `8MB`, since `a` refers to a vector of 1 million doubles.
+2. `8MB`, since `b` refers to two references to the same vector behind `a`.
+3. `8MB`, since the list comprising `a` and `b` refer to the same vectorbehind `a`.
+4. `16MB`, since `b` refers to two references to two different vectors; one is a copy of that behind `a`, and one is the original.
+5. `16MB`, since of the 3 vector references it includes, two refers to the original vector behind `a`, and one refers to the modified copy behind `b[[1]]`.
+6. `16MB`, since `b` refers to two references to two different vectors; one is modified at step 4; one is modified at this step 6.
+7. `24MB`, since `a` and `b` now refer to three different vectors: the original vector behind `a`, the modified copy behind `b[[1]]`, and the modified copy behind `b[[2]]`.
+
+```{webr Ex 2.2.11 A1}
 #| autorun: true
 # Part 1
 a <- runif(1e6)
 message("Size of a: ")
-obj_size(a)
+lobstr::obj_size(a)
 
 # Part 2
 b <- list(a, a)
 message("Size of b: ")
-obj_size(b)
+lobstr::obj_size(b)
 
 # Part 3
 message("Size of a and b: ")
-obj_size(a, b)
+lobstr::obj_size(a, b)
 
 # Part 4
 b[[1]][[1]] <- 10
 message("Size of b after modification: ")
-obj_size(b)
+lobstr::obj_size(b)
 
 # Part 5
 message("Size of a and b: ")
-obj_size(a, b)
+lobstr::obj_size(a, b)
 
 # Part 6
 b[[2]][[1]] <- 10
 message("Size of b after modification: ")
-obj_size(b)
+lobstr::obj_size(b)
 
 # Part 7
 message("Size of a and b: ")
-obj_size(a, b)
+lobstr::obj_size(a, b)
 ```
 
+##### An even clearer answer:
+
+```{webr Ex 2.2.11 A2}
+#| autorun: true
+# Part 1
+a <- runif(1e6)
+message("References of a: ")
+lobstr::ref(a)
+
+# Part 2
+b <- list(a, a)
+message("References of b: ")
+lobstr::ref(b)
+
+# Part 3
+message("References of a and b: ")
+lobstr::ref(a, b)
+
+# Part 4
+b[[1]][[1]] <- 10
+message("References of b after modification: ")
+lobstr::ref(b)
+
+# Part 5
+message("References of a and b: ")
+lobstr::ref(a, b)
+
+# Part 6
+b[[2]][[1]] <- 10
+message("References of b after modification: ")
+lobstr::ref(b)
+
+# Part 7
+message("References of a and b: ")
+lobstr::ref(a, b)
+```
+
+As shown above; objects in parts 1 - 3 refer to one vector; objects in parts 4 - 6 refer to two vectors; the object in part 7 refer to three vectors.
+
 ## Modify-in-place
+
+More details are available in the [Names and values Modify-in-place](https://adv-r.hadley.nz/names-values.html#modify-in-place) book chapter.
 
 ### Ex. 1
 
@@ -550,10 +599,18 @@ medians <- vapply(x, median, numeric(1))
 
 # Perform proof
 ## NB: This would be performed live in your browser!
-bench::mark(
+results <- bench::mark(
   method_1(x, medians),
   method_2(x, medians)
 )
+
+print(results)
+
+message(paste(
+  "Method 2 is ",
+  results$`itr/sec`[2] / results$`itr/sec`[1],
+  " times faster than method 1"
+))
 ```
 
 The 2nd method seems to be 10x faster (likely due to needing fewer copies). We can test this again on a larger dataset.
@@ -588,10 +645,18 @@ medians <- vapply(x, median, numeric(1))
 
 # Perform proof
 ## NB: This would be performed live in your browser!
-bench::mark(
+results <- bench::mark(
   method_1(x, medians),
   method_2(x, medians)
 )
+
+print(results)
+
+message(paste(
+  "Method 2 is ",
+  results$`itr/sec`[2] / results$`itr/sec`[1],
+  " times faster than method 1"
+))
 ```
 
 ### Ex. 3

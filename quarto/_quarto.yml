@@ -2,7 +2,7 @@ project:
   type: book
 
 book:
-  title: "Advanced R Workbook"
+  title: "Advanced R Live Workbook"
   author: "Nghia Nguyen (Mitchell)"
   date: today
   repo-url: https://github.com/nghiaagent/2025-advanced-r-notebook
