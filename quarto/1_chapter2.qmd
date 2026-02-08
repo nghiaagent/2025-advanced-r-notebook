@@ -2,24 +2,21 @@
 format: live-html
 webr:
   packages:
+    - bench
     - here
+    - lobstr
+    - tidyverse
 ---
 
 {{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 # Names and values
 
-```{r setup}
+```{webr setup}
 #| include: FALSE
-
+#| edit: false
 # Declare location
 here::i_am("quarto/1_chapter2.qmd")
-
-# Import packages
-library("bench")
-library("here")
-library("lobstr")
-library("tidyverse")
 
 # Set seed
 set.seed(67)
@@ -27,11 +24,14 @@ set.seed(67)
 
 ## Quiz
 
+More details are available in the [textbook section](https://adv-r.hadley.nz/names-values.html#quiz).
+
 ### Quiz 1
 
 Given the following data frame, how do I create a new column called "3" that contains the sum of 1 and 2? You may only use `$`, not `[[`. What makes 1, 2, and 3 challenging as variable names?
 
 ```{webr Quiz 1 Q}
+#| edit: false
 df <- data.frame(runif(3), runif(3))
 names(df) <- c(1, 2)
 ```
@@ -41,42 +41,56 @@ names(df) <- c(1, 2)
 `1` and `2` and `3` are challenging as variable names since they are non-syntactic names. Though they can still be used (here) via coercing:
 
 ```{webr Quiz 1 A}
+#| autorun: true
+# Build object for question
+df <- data.frame(runif(3), runif(3))
+names(df) <- c(1, 2)
+
+# Solution
 df$`3` <- df$`1` + df$`2`
-
 head(df)
-
 ```
 
 ### Quiz 2
 
 In the following code, how much memory does y occupy?
 
-```{r Quiz 2 Q}
+```{webr Quiz 2 Q}
+#| edit: false
 x <- runif(1e6)
 y <- list(x, x, x)
-
 ```
 
 #### Answer
 
 In this code, y takes slightly more memory than x, but not 3 times more (only 80 bytes). This is because y is a list containing 3 references to the 1 vector underlying x. List structure takes up 80 bytes, the vector takes up 8MB.
 
-```{r Quiz 2 A}
-lobstr::obj_size(x)
-lobstr::obj_size(y)
-lobstr::obj_size(y) - lobstr::obj_size(x)
+```{webr Quiz 2 A}
+#| autorun: true
+# Build object for quiz
+x <- runif(1e6)
+y <- list(x, x, x)
 
+# Quiz answers
+message("Size of x: ")
+lobstr::obj_size(x)
+
+message("Size of y: ")
+lobstr::obj_size(y)
+
+message("Difference in size: ")
+lobstr::obj_size(y) - lobstr::obj_size(x)
 ```
 
 ### Quiz 3
 
 On which line does `a` get copied in the following example?
 
-```{r Quiz 3 Q}
+```{webr Quiz 3 Q}
+#| edit: false
 a <- c(1, 5, 3, 2)
 b <- a
 b[[1]] <- 10
-
 ```
 
 #### Answer
@@ -91,21 +105,31 @@ Explain the relationship between `a`, `b`, `c`, and `d` in the following code:
 
 #### Answers
 
+This can be determined using their object addresses:
 -   `a` points to a vector
 -   `b` points to the same vector as `a`
 -   `c` points to the same vector as `a` and `b`
 -   `d` points to a different vector
 
-```{r Ex 2.2.1}
+```{webr Ex 2.2.1}
+#| autorun: true
+# Build objects for question
 a <- 1:10
 b <- a
 c <- b
 d <- 1:10
 
-# Proof
+# Perform proof
+message("Address of a: ")
 lobstr::obj_addr(a)
+
+message("Address of b: ")
 lobstr::obj_addr(b)
+
+message("Address of c: ")
 lobstr::obj_addr(c)
+
+message("Address of d: ")
 lobstr::obj_addr(d)
 
 ```
@@ -114,7 +138,8 @@ lobstr::obj_addr(d)
 
 The following code accesses the mean function in multiple ways. Do they all point to the same underlying function object? Verify this with `lobstr::obj_addr()`.
 
-```{r eval = FALSE}
+```{webr Ex 2.2.2 Q}
+#| eval: false
 mean
 base::mean
 get("mean")
@@ -124,24 +149,29 @@ match.fun("mean")
 
 #### Answer
 
-All expressions above point to the same function
+All expressions above point to the same function. We can investigate using the `lobstr::obj_addr()` function.
 
-```{r}
-mean %>%
+```{webr Ex 2.2.2 A}
+#| autorun: true
+message("Address of mean: ")
+mean |>
   lobstr::obj_addr()
 
-base::mean %>%
+message("Address of base::mean: ")
+base::mean |>
   lobstr::obj_addr()
 
-get("mean") %>%
+message("Address of get(\"mean\"): ")
+get("mean") |>
   lobstr::obj_addr()
 
-evalq(mean) %>%
+message("Address of evalq(mean): ")
+evalq(mean) |>
   lobstr::obj_addr()
 
-match.fun("mean") %>%
+message("Address of match.fun(\"mean\"): ")
+match.fun("mean") |>
   lobstr::obj_addr()
-
 ```
 
 ### Ex. 3
@@ -150,14 +180,13 @@ By default, base R data import functions, like `read.csv()`, will automatically 
 
 #### Answer
 
-`read.csv()` is problematic because they by default creates syntactic names from headers. This changes data without user input.
+`read.csv()` is problematic because they by default creates syntactic names from headers. This changes data without user input. We can suppress this behaviour by setting `check.names = FALSE`.
 
-```{r}
+```{webr Ex 2.2.3 Q}
 #| eval: false
 ?read.csv
 ```
 
-Set `check.names = FALSE` to suppress this behaviour
 
 ### Ex. 4
 
@@ -165,7 +194,7 @@ What rules does `make.names()` use to convert non-syntactic names into syntactic
 
 #### Answer
 
-```{r}
+```{webr Ex 2.2.4 Q}
 #| eval: false
 ?make.names
 ```
@@ -177,9 +206,10 @@ The rules for `make.names()` are:
 -   Append `.` if name matches R keyword
 -   Deduplicate names
 
-The function itself is written in `C`; I don't know how to understand `C` yet.
+The function itself is written in `C`.
 
-```{r}
+```{webr Ex 2.2.4 A}
+#| autorun: true
 make.names
 ```
 
@@ -199,7 +229,8 @@ Why is `tracemem(1:10)` not useful?
 
 #### Answer
 
-```{r}
+```{webr Ex 2.2.5 A}
+#| autorun: true
 cat(tracemem(1:10), "\n")
 cat(tracemem(1:10), "\n")
 cat(tracemem(1:10), "\n")
@@ -208,11 +239,14 @@ cat(tracemem(1:10), "\n")
 
 The purpose of `tracemem()` is to tag a named object and see when its underlying data structure is copied. `1:10` is not a named object, so `tracemem()` wouldn't be useful.
 
+(In the case of this notebook, it is not useful because webR does not support memory profiling.)
+
 ### Ex. 2
 
 Explain why `tracemem()` shows two copies when you run this code. Hint: carefully look at the difference between this code and the code shown earlier in the section.
 
-```{r}
+```{webr Ex 2.2.6 Q}
+#| eval: false
 x <- c(1L, 2L, 3L)
 tracemem(x)
 
@@ -223,10 +257,13 @@ x[[3]] <- 4
 
 `tracemem()` shows two copies because `x[[3]]` was replaced with a double. This means the object that x points to was modified (thus copied) twice; first to coerce a integer vector to a double vector, second to replace `x[[3]]` with `4`
 
-```{r}
+```{webr Ex 2.2.6 A}
+#| autorun: true
+message("Initial object: ")
 x <- c(1L, 2L, 3L)
 lobstr::tree(x)
 
+message("After modification: ")
 x[[3]] <- 4
 lobstr::tree(x)
 ```
@@ -235,7 +272,8 @@ lobstr::tree(x)
 
 Sketch out the relationship between the following objects:
 
-```{r}
+```{webr Ex 2.2.7 Q}
+#| eval: false
 a <- 1:10
 b <- list(a, a)
 c <- list(b, a, 1:10)
@@ -243,17 +281,27 @@ c <- list(b, a, 1:10)
 
 #### Answer
 
-Relationship is as follows
+The relationship is as follows:
 
 -   `a` points to an ALTREP vector representing `1:10`
 -   `b` is a list containing 2 references to the ALTREP vector representing `1:10`
 -   `c` is a list containing a reference to `b`, a reference to `a`, and a reference to the ALTREP vector representing `1:10`
 
-```{r}
+```{webr Ex 2.2.7 A}
+#| autorun: true
+# Build objects for question
+a <- 1:10
+b <- list(a, a)
+c <- list(b, a, 1:10)
+
+# Perform proof
+message("Showing relationship of a")
 tree(a)
 
+message("Showing relationship of b")
 tree(b)
 
+message("Showing relationship of c")
 tree(c)
 ```
 
@@ -261,27 +309,32 @@ tree(c)
 
 What happens when you run this code?
 
-```{r}
+```{webr Ex 2.2.8 Q}
+#| eval: false
 x <- list(1:10)
 x[[2]] <- x
 ```
 
 #### Answer
 
-Originally, `x` is a list with a reference to the vector `1:10`
+- Line 1: Originally, `x` is a list with a reference to the vector `1:10`
+- Line 2: `x`'s underlying list is then copied-on-modify; then the 2nd slot `x[[2]]` is changed to contain the original list object. Both list slots point to the same vector `1:10`
 
-`x`'s underlying list is then copied-on-modify; then the 2nd slot `x[[2]]` is changed to contain the original list object.
-
-Both list slots point to the same vector `1:10`
-
-```{r}
+```{webr Ex 2.2.8 A1}
+#| autorun: true
 # First object
+message("Initial object: ")
 x <- list(1:10)
 str(x)
 tree(x)
 ref(x)
+```
 
+```{webr Ex 2.2.8 A2}
+#| autorun: true
 # Second object
+message("After modification: ")
+x <- list(1:10)
 x[[2]] <- x
 str(x)
 tree(x)
@@ -294,12 +347,11 @@ ref(x)
 
 In the following example, why are `object.size(y)` and `obj_size(y)` so radically different? Consult the documentation of `object.size()`.
 
-```{r}
+```{webr Ex 2.2.9 A}
+#| autorun: true
 y <- rep(list(runif(1e4)), 100)
-
 object.size(y)
 obj_size(y)
-
 ```
 
 #### Answer
@@ -310,60 +362,102 @@ obj_size(y)
 
 Take the following list. Why is its size somewhat misleading?
 
-```{r}
+```{webr Ex 2.2.10 Q}
+#| eval: false
 funs <- list(mean, sd, var)
 obj_size(funs)
-
 ```
 
 #### Answer
 
-The size are misleading because `mean`, `sd`, `var` are base R functions; the list does not contain exact copies, but only references. As in Ex. 1, this would be shown via `object.size()` and `obj_size()`
+The size are misleading because `mean`, `sd`, `var` are base R functions; the list does not contain exact copies, but only references to their `C` implementations. As in Ex. 1, this would be shown via `object.size()` and `obj_size()`. The `obj_size()` function includes the environment needed to run the function, which is why it is larger than `object.size()`.
 
-```{r}
+```{webr Ex 2.2.10 A}
+#| autorun: true
+# Build objects for question
+funs <- list(mean, sd, var)
+
+# Perform proof
 object.size(funs)
 obj_size(funs)
-
 ```
 
 ### Ex. 3
 
 Predict the output of the following code:
 
-```{r echo=TRUE}
+```{webr Ex 2.2.11 Q}
+#| eval: false
+# Part 1
 a <- runif(1e6)
-
-# This will be 8MB, which is total size of a
 obj_size(a)
 
+# Part 2
 b <- list(a, a)
-
-# This will be 8MB, which is mostly size of a
 obj_size(b)
 
-# This will be 8MB, which is mostly size of a
+# Part 3
 obj_size(a, b)
 
+# Part 4
 b[[1]][[1]] <- 10
-
-# This will be 16MB, which is mostly size of modified b[[1]] and
-# unmodified b[[2]] pointing to a
 obj_size(b)
 
-# This will be 16MB, which is mostly size of modified b[[1]] and
-# unmodified b[[2]] pointing to a
+# Part 5
 obj_size(a, b)
 
+# Part 6
 b[[2]][[1]] <- 10
-
-# This will be 16MB, which is mostly size of modified b[[1]] and
-# modified b[[2]]
 obj_size(b)
 
-# This will be 24MB, which is mostly size of a, modified b[[1]], and
-# modified b[[2]]
+# Part 7
 obj_size(a, b)
 
+```
+
+#### Answer
+
+1. Object size will be 8MB
+2. Object size will be 8MB
+3. Object size will be 8MB
+4. Object size will be 16MB
+5. Object size will be 16MB
+6. Object size will be 16MB
+7. Object size will be 24MB
+
+```{webr Ex 2.2.11 A}
+#| autorun: true
+# Part 1
+a <- runif(1e6)
+message("Size of a: ")
+obj_size(a)
+
+# Part 2
+b <- list(a, a)
+message("Size of b: ")
+obj_size(b)
+
+# Part 3
+message("Size of a and b: ")
+obj_size(a, b)
+
+# Part 4
+b[[1]][[1]] <- 10
+message("Size of b after modification: ")
+obj_size(b)
+
+# Part 5
+message("Size of a and b: ")
+obj_size(a, b)
+
+# Part 6
+b[[2]][[1]] <- 10
+message("Size of b after modification: ")
+obj_size(b)
+
+# Part 7
+message("Size of a and b: ")
+obj_size(a, b)
 ```
 
 ## Modify-in-place
@@ -372,22 +466,26 @@ obj_size(a, b)
 
 Explain why the following code doesn’t create a circular list.
 
-```{r}
+```{webr Ex 2.3.1 Q}
+#| eval: false
 x <- list()
 x[[1]] <- x
 ```
 
 #### Answer
 
-Because the 1st `x` refers to a different object than the 2nd `x` altogether. It's not a loop. Upon the second command, a new list is created, with its first element pointing to the list behind the first `x`, then the new list is bound to `x`.
+Because the 1st `x` refers to a different object than the 2nd `x` altogether. Upon line 2, a new list is created, with its first element pointing to the list behind the first `x`, then the new list is bound to `x`.
 
-```{r}
+```{webr Ex 2.3.1 A}
+#| autorun: true
 # Profile the 1st x
+message("Initial object: ")
 x <- list()
 lobstr::ref(x)
 lobstr::tree(x)
 
 # Profile the 2nd x
+message("After modification: ")
 x[[1]] <- x
 lobstr::ref(x)
 lobstr::tree(x)
@@ -399,7 +497,8 @@ Wrap the two methods for subtracting medians into two functions, then use the `b
 
 **NB:** The methods are:
 
-```{r}
+```{webr Ex 2.3.2 Q}
+#| eval: false
 # Subtract median from all elements of a dataframe
 method_1 <- function(x, medians) {
   for (i in seq_along(medians)) {
@@ -421,42 +520,74 @@ method_2 <- function(x, medians) {
 
 Method 2 would be faster than method 1 since fewer copies are performed.
 
-```{r}
-# For the following dataframe and medians
+```{webr Ex 2.3.2 A1}
+#| autorun: true
+# Build objects for question
+## Example functions
+### Subtract median from all elements of a dataframe
+method_1 <- function(x, medians) {
+  for (i in seq_along(medians)) {
+    x[[i]] <- x[[i]] - medians[[i]]
+  }
+}
+
+### Coerce dataframe to list prior to calculation of median
+method_2 <- function(x, medians) {
+  y <- as.list(x)
+
+  for (i in seq_along(medians)) {
+    y[[i]] <- y[[i]] - medians[[i]]
+  }
+}
+
+## Example data
 x <- data.frame(matrix(
   runif(5 * 1e4),
   ncol = 5
 ))
 
-medians <- vapply(
-  x,
-  median,
-  numeric(1)
-)
+medians <- vapply(x, median, numeric(1))
 
-# Compare performance
+# Perform proof
+## NB: This would be performed live in your browser!
 bench::mark(
   method_1(x, medians),
   method_2(x, medians)
 )
 ```
 
-The 2nd method seems to be 3x faster (likely due to needing fewer copies)
+The 2nd method seems to be 10x faster (likely due to needing fewer copies). We can test this again on a larger dataset.
 
-```{r}
-# For the following dataframe and medians
+```{webr Ex 2.3.2 A2}
+#| autorun: true
+# Build objects for question
+## Example functions
+### Subtract median from all elements of a dataframe
+method_1 <- function(x, medians) {
+  for (i in seq_along(medians)) {
+    x[[i]] <- x[[i]] - medians[[i]]
+  }
+}
+
+### Coerce dataframe to list prior to calculation of median
+method_2 <- function(x, medians) {
+  y <- as.list(x)
+
+  for (i in seq_along(medians)) {
+    y[[i]] <- y[[i]] - medians[[i]]
+  }
+}
+
+## Example data
 x <- data.frame(matrix(
   runif(500 * 1e4),
   ncol = 500
 ))
 
-medians <- vapply(
-  x,
-  median,
-  numeric(1)
-)
+medians <- vapply(x, median, numeric(1))
 
-# Compare performance
+# Perform proof
+## NB: This would be performed live in your browser!
 bench::mark(
   method_1(x, medians),
   method_2(x, medians)
@@ -469,18 +600,19 @@ What happens if you attempt to use tracemem() on an environment?
 
 #### Answer
 
-Experiment:
+`tracemem()` will not trace it, because environments are not copied when they are modified. They are always modified in place. In the context of this notebook, it will fail due to webR not supporting memory profiling.
 
-```{r}
+```{webr Ex 2.3.3 A}
+#| autorun: true
 #| error: TRUE
-
+# Build objects for question
 env_test <- rlang::env(
   a = 1,
   b = 2,
   c = 3
 )
 
+# Perform proof
 tracemem(env_test)
 ```
 
-`tracemem()` will not trace it, because environments are not copied when they are modified. They are always modified in place.
