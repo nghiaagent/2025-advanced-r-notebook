@@ -1,0 +1,30 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Go to [https://nghiaagent.github.io/2025-advanced-r-notebook](https://nghiaagent.github.io/2025-advanced-r-notebook) to see a rendered version of this book.
+
+# Advanced R Interactive Solutions
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+This is the repository for my version of Advanced R Solutions. Here I provide my solutions to the questions in the [Advanced R (2nd edition) book](https://adv-r.hadley.nz/) in my coding style. The code cells are also interactive where appropriate!
+
+
+# Reproducibility
+
+- Make sure Quarto is installed.
+- Render this book with the following command:
+```
+quarto render quarto
+```
