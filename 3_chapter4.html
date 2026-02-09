@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>4&nbsp; Subsetting – Advanced R Workbook</title>
+<title>4&nbsp; Subsetting – Advanced R Live Workbook</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -153,7 +153,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Advanced R Workbook</a> 
+      <a href="./">Advanced R Live Workbook</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/nghiaagent/2025-advanced-r-notebook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
 </div>
@@ -618,7 +618,8 @@ $c
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>mtcars[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-error">
-<pre><code>Error in `[.data.frame`(mtcars, 1:20): undefined columns selected</code></pre>
+<pre><code>Error in `[.data.frame`:
+! undefined columns selected</code></pre>
 </div>
 </div>
 <p><code>mtcars[1:20, ]</code> gets the first 20 rows of <code>mtcars</code>, which is valid.</p>
@@ -734,7 +735,7 @@ $c
         rownames(y) &lt;- row.names(x)
     y
 }
-&lt;bytecode: 0x000000cf6ca12740&gt;
+&lt;bytecode: 0x0000008019a0c740&gt;
 &lt;environment: namespace:base&gt;</code></pre>
 </div>
 </div>
