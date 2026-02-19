@@ -13,8 +13,7 @@ rendered version of this book.
 
 This is the repository for my version of Advanced R Solutions. Here I
 provide my solutions to the questions in the [Advanced R (2nd edition)
-book](https://adv-r.hadley.nz/) in my coding style. The code cells are
-also interactive where appropriate!
+book](https://adv-r.hadley.nz/) as interactive code cells where appropriate!
 
 # Reproducibility
 
