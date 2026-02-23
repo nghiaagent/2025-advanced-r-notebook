@@ -26,4 +26,4 @@ This is my code and answers for questions in the [Advanced R (2nd edition) book]
 
 ## Motivation
 
-There currently exists an amazing [Advanced R Solutions book](https://advanced-r-solutions.rbind.io/) with clearly worked answers. This workbook retreads the same steps, applying what I consider to be good coding practices. The code cells run live in your browser via webR.
+There currently exists an [Advanced R Solutions book](https://advanced-r-solutions.rbind.io/) with clearly worked answers. This workbook retreads the same steps, but with code cells running live in your browser via webR.
