@@ -191,7 +191,11 @@ How do you create raw and complex scalars? (See `?raw` and `?complex`.)
 
 #### Answers
 
-There are many ways to create raw vectors:
+There are many ways to create raw vectors:  
+
+- Directly create a vector containing `as.raw` data.
+- Create a vector, then coerce it to raw using `as.raw()`.
+- Create an empty raw vector then fill slots.
 
 ```{webr Ex 3.2.1A}
 #| autorun: true
@@ -222,7 +226,11 @@ x
 typeof(x)
 ```
 
-There are also many ways to create complex vectors:
+There are also many ways to create complex vectors:  
+
+- Directly create a vector containing complex data.
+- Create a vector, then coerce it to complex using `as.complex()`. However, the data won't have an imaginary part.
+- Create an empty complex vector then fill slots.
 
 ```{webr Ex 3.2.1B}
 #| autorun: true
@@ -236,14 +244,7 @@ typeof(x)
 
 # Create vector, then coerce it to complex
 ## Note: no imaginary part, initially
-x <- c(1, 1.7)
-
-## Show vector and type before coercion
-message("Showing content of c(1, 1.7)")
-x
-typeof(x)
-
-x <- x |>
+x <- c(1, 1.7) |>
   as.complex()
 
 ## Show vector and type after coercion
@@ -305,24 +306,32 @@ Why is `1 == "1"` true? Why is `-1 < FALSE` true? Why is `"one" < 2` false?
 
 #### Answers
 
-Because both sides of the argument are coerced (in the order of logical - numeric - character) prior to comparison.
+Because both sides of the argument are coerced (in the order of logical -> numeric -> character) prior to comparison.
 
 ```{webr Ex 3.2.3A}
-# First comparison: Both sides coerced to character.
+# First comparison: Both sides coerced to character prior to comparison.
 c(1, "1") |>
   typeof()
 
-# Second comparison: Both sides coerced to numeric
+message("Printing c(1, "1")")
+c(1, "1") |>
+  print()
+
+# Second comparison: Both sides coerced to numeric prior to comparison.
 c(-1, FALSE) |>
   typeof()
 
-c(-1, FALSE)
+message("Printing c(-1, FALSE)")
+c(-1, FALSE) |>
+  print()
 
 # Third comparison: Both sides coerced to character, comparison not possible
 c("one", 2) |>
   typeof()
 
-c("one", 2)
+message("Printing c("one", 2)")
+c("one", 2) |>
+  print()
 
 ```
 
@@ -332,7 +341,7 @@ Why is the default missing value, NA, a logical vector? What’s special about l
 
 #### Answers
 
-NA is automatically set to the strictest type possible, allowing it to be coerced following the rest of the vector. Where coercion is not needed, it defaults to the strictest type of logical.
+Of the multiple types of logicals, NA is automatically set to the strictest type possible, allowing it to be coerced following the rest of the vector. Where coercion is not needed, it defaults to the strictest type of logical.
 
 ```{webr Ex 3.2.4A}
 #| autorun: true
