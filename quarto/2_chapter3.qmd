@@ -115,9 +115,9 @@ How is a list different from an atomic vector? How is a matrix different from a 
 
 #### Answers
 
--   A list is a vector of references to objects. These objects can be vectors themselves. Lists don't contain actual "data". Whereas atomic vectors contain data themselves.
+- A list is a vector of references to objects. These objects can be vectors that contain data. Lists don't contain actual "data".
 
--   A matrix is an atomic vector with a `dim` attribute. A data frame is a list of atomic vectors. All data in a matrix must be the same type, where each column in a data frame may have a different type.
+- A matrix is an atomic vector with a `dim` attribute. A data frame is a list of atomic vectors. All data in a matrix must be the same type, where each column in a data frame may have a different type.
 
 ### Quiz 4
 
@@ -346,9 +346,9 @@ Precisely what do `is.atomic()`, `is.numeric()`, and `is.vector()` test for?
 
 #### Answers
 
--   `is.atomic()` checks whether the object is an atomic vector (falling into 6 defined classes and direct extensions)
--   `is.numeric())` checks whether the data is intepretable as numbers (base type `double` or `integer`)
--   `is.vector()` checks whether the provided vector (includes list) have no attributes other than names. Since a matrix is a vector with the `dim` attribute, it would fail this test.
+- `is.atomic()` checks whether the object is an atomic vector (falling into 6 defined classes and direct extensions)
+- `is.numeric()` checks whether the data is intepretable as numbers (base type `double` or `integer`)
+- `is.vector()` checks whether the provided vector (includes list) have no attributes other than names. Since a matrix is a vector with the `dim` attribute, it would fail this test.
 
 ```{webr Ex 3.2.5A}
 #| autorun: true

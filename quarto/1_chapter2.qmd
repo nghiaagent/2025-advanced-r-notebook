@@ -290,9 +290,9 @@ c <- list(b, a, 1:10)
 
 The relationship is as follows:
 
--   `a` points to an ALTREP vector representing `1:10`
--   `b` is a list containing 2 references to the ALTREP vector representing `1:10`
--   `c` is a list containing a reference to `b`, a reference to `a`, and a reference to the ALTREP vector representing `1:10`
+- `a` points to an ALTREP vector representing `1:10`
+- `b` is a list containing 2 references to the ALTREP vector representing `1:10`
+- `c` is a list containing a reference to `b`, a reference to `a`, and a reference to the ALTREP vector representing `1:10`
 
 ```{webr Ex 2.2.7 A}
 #| autorun: true
