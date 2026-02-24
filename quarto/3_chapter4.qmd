@@ -528,7 +528,7 @@ x <- list(
 
 # Print test matrices and diagonals to show desired behavior
 x |>
-  purrr::imap(
+  purrr::iwalk(
     \(mat, name) {
       # Print matrix
       message(paste0(name, " matrix:"))
@@ -675,9 +675,11 @@ message("Linear model summary object:")
 lobstr::tree(mod_summary)
 
 # Get residual df
+message("Residual df:")
 mod$df.residual
 
 # Get R-squared
+message("R-squared:")
 mod_summary$r.squared
 ```
 
