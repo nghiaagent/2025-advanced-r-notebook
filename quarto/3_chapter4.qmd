@@ -3,30 +3,31 @@ format: live-html
 webr:
   packages:
     - here
+    - lobstr
+    - purrr
+    - reactable
+    - tidyverse
+    - tibble
+    - vctrs
 ---
 
 {{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 # Subsetting
 
-```{r setup}
-#| include: FALSE
+```{webr setup}
+#| include: False
 
 # Declare location
 here::i_am("quarto/3_chapter4.qmd")
 
-# Import packages
-library("lobstr")
-library("reactable")
-library("tidyverse")
-library("vctrs")
-
 # Set seed
 set.seed(67)
-
 ```
 
 ## Quiz
+
+More details are available in the [Subsetting Quiz](https://adv-r.hadley.nz/subsetting.html#introduction-3) book chapter.
 
 ### Quiz 1
 
@@ -36,33 +37,46 @@ What is the result of subsetting a vector with positive integers, negative integ
 
 - Positive integer: Select elements at specified indices
 
-```{r}
+```{webr Ex 4.1.1A1}
+#| autorun: True
+# Create example vector
 x <- c(1:6)
+
+# Subset vector
 x[c(1, 3)]
 ```
 
-- Negative integers: Exclude those indices
+- Negative integers: Exclude the specified indices
 
-```{r}
+```{webr Ex 4.1.1A2}
+#| autorun: True
+# Create example vector
 x <- c(1:6)
+
+# Subset vector
 x[c(-1, -3)]
 ```
 
 - Logical vector: Select elements where the logical vector element is TRUE (this is how subsetting via a condition work)
 
-
-```{r}
-# Get even numbers (mod 2 = 0)
+```{webr Ex 4.1.1A3}
+#| autorun: True
+# Create example vector
 x <- c(1:6)
+
+# Get even numbers (mod 2 = 0)
 x[x %% 2 == 0]
 ```
 
 - Character vector: Return elements with matching names
 
-```{r}
-x <- c(1:6) %>%
-  set_names(letters[1:6])
+```{webr Ex 4.1.1A4}
+#| autorun: True
+# Create example vector
+x <- c(1:6)
+names(x) <- letters[1:6]
 
+# Subset vector based on their names
 x[c("c", "a", "d")]
 ```
 
@@ -70,7 +84,9 @@ x[c("c", "a", "d")]
 
 What’s the difference between `[`, `[[`, and `$` when applied to a list?
 
-```{r}
+```{webr Ex 4.1.2Q}
+#| eval: False
+# Create example list
 x <- list(
   a = c(1:3),
   b = c(4:6),
@@ -81,25 +97,54 @@ x <- list(
 
 #### Answers
 
-- `[` Get a subsetted list based on the condition
+- `[` gets a subsetted list based on the condition
 
-```{r}
+```{webr Ex 4.1.2A1}
+#| autorun: True
+# Create example list
+x <- list(
+  a = c(1:3),
+  b = c(4:6),
+  c = c(7:9),
+  d = c(10:12)
+)
+
+# Subset with `[`
 x[c("d", "c")]
 ```
 
-- `[[` Get the selected list element (select via index or name)
+- `[[` gets the selected list element (select via index or name)
 
-```{r}
+```{webr Ex 4.1.2A2}
+#| autorun: True
+# Create example list
+x <- list(
+  a = c(1:3),
+  b = c(4:6),
+  c = c(7:9),
+  d = c(10:12)
+)
+
+# Subset with `[[`, by index then by name
 x[[1]]
 x[["a"]]
 ```
 
-- `x$var` Get the selected list element (select via name, shorthand for `x[["var"]]`)
+- `x$var` gets the selected list element (select via name, shorthand for `x[["var"]]`)
 
-```{r}
+```{webr Ex 4.1.2A3}
+#| autorun: True
+# Create example list
+x <- list(
+  a = c(1:3),
+  b = c(4:6),
+  c = c(7:9),
+  d = c(10:12)
+)
+
+# Subset with `$`, by name
 x$a
 ```
-
 
 ### Quiz 3
 
@@ -109,35 +154,63 @@ When should you use `drop = FALSE`?
 
 When subsetting a matrix / array / dataframe, length 1 dimensions are dropped. `drop = FALSE` prevents this.
 
-```{r}
+```{webr Ex 4.1.3A}
+#| autorun: True
+# Create example matrix
 x <- matrix(1:9, ncol = 3)
 
-x[1, ] %>%
-  str() # no longer 2D
+# Show that matrix has dimensions
+print(x)
 
+# Subset to 1D vector without drop = FALSE
+# Vector is no longer 2D
+message("Without drop = FALSE:")
+x[1, ] %>%
+  print()
+
+# Subset to 1D vector with drop = FALSE
+# Vector is still 2D
+message("With drop = FALSE:")
 x[1, , drop = FALSE] %>%
-  str() # is 2D
+  print()
 ```
 
 ### Quiz 4
 
 If x is a matrix, what does `x[] <- 0` do? How is it different from `x <- 0`?
 
-#### Answers
-
-`x[] <- 0` replaces all slots of the matrix with 0 but keeping its attributes. `x <- 0` replaces the matrix with 0.
-
-```{r}
+```{webr Ex 4.1.4Q}
+#| eval: False
 # First case
 x <- matrix(1:9, ncol = 3)
 x[] <- 0
-x
 
 # Second case
 x <- matrix(1:9, ncol = 3)
 x <- 0
-x
+```
 
+#### Answers
+
+`x[] <- 0` replaces all slots of the matrix with 0 but keeping its attributes. `x <- 0` replaces the matrix with the value 0.
+
+```{webr Ex 4.1.4A}
+#| autorun: True
+# First case
+x <- matrix(1:9, ncol = 3)
+x[] <- 0
+
+# Print first case
+message("x[] <- 0 results in:")
+print(x)
+
+# Second case
+x <- matrix(1:9, ncol = 3)
+x <- 0
+
+# Print second case
+message("x <- 0 results in:")
+print(x)
 ```
 
 
@@ -145,9 +218,9 @@ x
 
 How can you use a named vector to relabel categorical variables?
 
-```{r}
+```{webr Ex 4.1.5Q}
+#| eval: False
 x <- c("o", "e", "e", "o", "e", "o")
-x
 ```
 
 
@@ -157,55 +230,150 @@ x
 - Subset lookup vector using original vector
 - (Optional) remove lookup vector names for clarity 
 
+```{webr Ex 4.1.5A}
+#| autorun: True
 
-```{r}
+# Create vector to be renamed
+x <- c("o", "e", "e", "o", "e", "o")
 
+# Create lookup vector
 lookup <- c(
   "o" = "odd",
   "e" = "even"
 )
 
-x <- lookup[x] %>%
+# Subset lookup vector using original vector to recode values
+# Remove names
+x <- lookup[x] |>
   unname()
 
+# Print result
+message("Recode result:")
+x
+```
+
+Alternatively, one can also use `dplyr::case_when()`
+
+```{webr Ex 4.1.5A2}
+#| autorun: True
+# Alternate Quiz 5 answer
+# Create vector to be renamed
+x <- c("o", "e", "e", "o", "e", "o")
+
+# Recode using `dplyr::case_when`
+x <- dplyr::case_when(
+  x == "o" ~ "odd",
+  x == "e" ~ "even"
+)
+
+# Print result
+message("Recode result:")
 x
 ```
 
 
 ## Selecting multiple elements
 
+More details are available in the [Selecting multiple elements](https://adv-r.hadley.nz/subsetting.html#subset-multiple) book chapter.
+
 ### Ex. 1
 
 Fix each of the following common data frame subsetting errors:
 
-```{r}
-#| eval: false
+```{webr Ex 4.2.6.1Q}
+#| eval: False
+# Error 1
 mtcars[mtcars$cyl = 4, ]
+
+# Error 2
 mtcars[-1:4, ]
+
+# Error 3
 mtcars[mtcars$cyl <= 5]
+
+# Error 4
 mtcars[mtcars$cyl == 4 | 6, ]
 ```
 
 #### Answers
 
-```{r}
+##### Error 1
+
+```{webr Ex 4.2.6.1Q1}
+#| autorun: True
+#| edit: False
+#| error: True
+# Error 1
+mtcars[mtcars$cyl = 4, ]
+```
+
+```{webr Ex 4.2.6.1A1}
+#| autorun: True
 # Make sure the logical vector is a test
-mtcars[mtcars$cyl == 4, ] %>%
+mtcars[mtcars$cyl == 4, ] |>
   reactable(defaultPageSize = 4)
+```
 
+##### Error 2
+
+```{webr Ex 4.2.6.1Q2}
+#| autorun: True
+#| edit: False
+#| error: True
+# Error 2
+mtcars[-1:4, ]
+```
+
+```{webr Ex 4.2.6.1A2}
+#| autorun: True
 # Wrap indices inside a vector
-mtcars[-(1:4), ] %>%
+mtcars[-(1:4), ] |>
   reactable(defaultPageSize = 4)
+```
 
+##### Error 3
+
+```{webr Ex 4.2.6.1Q3}
+#| autorun: True
+#| edit: False
+#| error: True
+# Error 3
+mtcars[mtcars$cyl <= 5]
+```
+
+```{webr Ex 4.2.6.1A3}
+#| autorun: True
+# Error 3
+# mtcars[mtcars$cyl <= 5]
 # Add comma to subset rows
-mtcars[mtcars$cyl <= 5, ] %>%
+mtcars[mtcars$cyl <= 5, ] |>
   reactable(defaultPageSize = 4)
+```
 
+##### Error 4
+
+```{webr Ex 4.2.6.1Q4}
+#| autorun: True
+#| edit: False
+#| error: True
+# Error 4
+# Cylinder is not filtered properly
+mtcars[mtcars$cyl == 4 | 6, ] |>
+  reactable(defaultPageSize = 4)
+```
+
+```{webr Ex 4.2.6.1A4}
+#| autorun: True
 # Either use %in% or use 2 conditions
-mtcars[mtcars$cyl %in% c(4, 6), ] %>%
+## This solution use %in%
+mtcars[mtcars$cyl %in% c(4, 6), ] |>
   reactable(defaultPageSize = 4)
+```
 
-mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ] %>%
+```{webr Ex 4.2.6.1A5}
+#| autorun: True
+## This solution use 2 conditions
+mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ] |>
   reactable(defaultPageSize = 4)
 ```
 
@@ -213,66 +381,126 @@ mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ] %>%
 
 Why does the following code yield five missing values? (Hint: why is it different from `x[NA_real_]`?)
 
-```{r}
+```{webr Ex 4.2.6.2Q}
+#| autorun: True
+#| edit: False
+#| error: True
 x <- 1:5
 x[NA]
-#> [1] NA NA NA NA NA
 ```
 
 #### Answers
 
-- Code compares if each element of `x` is the same as `NA`; returns NA.
-- `NA` is recycled; the check is repeated for all vector elements. 
+- `NA` is recycled, meaning this check is performed on all vector elements.
+- At each element, the code compares it against NA and returns an NA due to its propagation property.
 
 **NB**: This is why we use `is.na()` to get missing values in an object instead.
 
-```{r}
+```{webr Ex 4.2.6.2A1}
+#| autorun: True
+# Show that every integer compared to an NA returns an NA.
 1L == NA
+```
+
+As to why `NA_real_` is different from `NA`:
+- `NA` is a logical value and is recycled in the subsetting. This means that `x[NA]` is equivalent to `x[c(NA, NA, NA, NA, NA)]`.
+- `NA_real_` is a double value and is not recycled in the subsetting.
+
+```{webr Ex 4.2.6.2A2}
+#| autorun: True
+# Show type of NA
+NA |> class()
+
+# Show type of NA_real_
+NA_real_ |> class()
 ```
 
 ### Ex. 3
 
 What does `upper.tri()` return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?
 
-```{r}
+```{webr Ex 4.2.6.3Q}
+#| eval: False
 x <- outer(1:5, 1:5, FUN = "*")
 x[upper.tri(x)]
 ```
 
 #### Answers
 
-- `upper.tri()` returns the upper triangle (top right) portion of the matrix; where the row number is smaller than the column number.
+- `upper.tri()` returns the upper triangle (top right) portion of the matrix, where the row number is smaller than the column number, in the form of a logical matrix.
 
-```{r}
+```{webr Ex 4.2.6.3A1}
+#| autorun: True
+# Build example matrix
+x <- outer(1:5, 1:5, FUN = "*")
+
+# Print matrix
+message("Original matrix:")
+print(x)
+
+# Print upper triangle
+message("Upper triangle:")
 upper.tri(x)
 ```
 
-- The logical matrix can be used to subset the original matrix.
-- Extra behaviour includes the option to include diagonals.
+- The logical matrix can then be used to subset the original matrix.
 - The returned object is a vector, dropping the `dim` attribute of a matrix.
 
-```{r}
+```{webr Ex 4.2.6.3A2}
+#| autorun: True
 x[upper.tri(x)]
+```
+
+- Extra behaviour includes the option to include diagonals from the matrix (i.e. where row number equals column number).
+
+```{webr Ex 4.2.6.3A3}
+#| autorun: True
+# Show the options in upper.tri()
+message("Options in upper.tri():")
+formals(upper.tri)
+
+# Build example matrix with diagonals
+x <- outer(1:5, 1:5, FUN = "*")
+
+# Print upper triangle with diagonals
+message("Upper triangle without diagonals:")
+upper.tri(x, diag = FALSE)
+
+# Print upper triangle with diagonals
+message("Upper triangle with diagonals:")
+upper.tri(x, diag = TRUE)
 ```
 
 ### Ex. 4
 
 Why does `mtcars[1:20]` return an error? How does it differ from the similar `mtcars[1:20, ]`?
 
+```{webr Ex 4.2.6.4Q}
+#| eval: False
+mtcars[1:20]
+mtcars[1:20, ]
+```
+
 #### Answers
 
 `mtcars[1:20]` get the first 20 columns of `mtcars`. There are not enough columns.
 
-```{r}
-#| error: TRUE
+```{webr Ex 4.2.6.4A1}
+#| autorun: True
+#| error: True
+# Get dimension of mtcars
+message(paste0("There are ", dim(mtcars)[2], " columns in mtcars."))
 dim(mtcars)
+
+# Try to subset the first 20 columns
 mtcars[1:20]
 ```
 
 `mtcars[1:20, ]` gets the first 20 rows of `mtcars`, which is valid.
 
-```{r}
-mtcars[1:20, ] %>%
+```{webr Ex 4.2.6.4A2}
+#| autorun: True
+mtcars[1:20, ] |>
   reactable(defaultPageSize = 4)
 ```
 
@@ -282,47 +510,78 @@ Implement your own function that extracts the diagonal entries from a matrix (it
 
 #### Answers
 
-Diagonal entries are entries where number of rows is equal to number of columns. We can programmatically create a matrix containing the relevant indices then subset the matrix for those indices.
+Let's make the function extra special by allowing it to extract diagonals from matrices and arrays (2 dimensions and more).
 
 ##### Desired behaviour
 
-```{r}
+```{webr Ex 4.2.6.5Q}
+#| autorun: True
+#| edit: False
 # Test matrices
 x <- list(
-  matrix(1:24, nrow = 3, ncol = 8),
-  matrix(1:24, nrow = 4, ncol = 6),
-  matrix(1:25, nrow = 5, ncol = 5),
-  matrix(1:24, nrow = 6, ncol = 4),
-  matrix(1:24, nrow = 8, ncol = 3)
+  "3x8" = matrix(1:24, nrow = 3, ncol = 8),
+  "4x6" = matrix(1:24, nrow = 4, ncol = 6),
+  "5x5" = matrix(1:25, nrow = 5, ncol = 5),
+  "6x4" = matrix(1:24, nrow = 6, ncol = 4),
+  "8x3" = matrix(1:24, nrow = 8, ncol = 3)
 )
 
-map(x, \(x) diag(x))
+# Print test matrices and diagonals to show desired behavior
+x |>
+  purrr::imap(
+    \(mat, name) {
+      # Print matrix
+      message(paste0(name, " matrix:"))
+      print(mat)
+
+      # Print diagonals
+      message(paste0(name, " matrix diagonals:"))
+      print(diag(mat))
+    }
+  )
 ```
 
 ##### Build function
 
-```{r}
+Diagonal entries are entries where number of rows is equal to number of columns. We can programmatically create a matrix containing the relevant indices then subset the matrix for those indices.
+
+```{webr Ex 4.2.6.5A1}
+#| autorun: True
 get_matrix_diagonals <- function(matrix) {
-  # Get total number of diagonals in matrix
-  select_length <- matrix %>%
-    dim() %>%
+  # Get total number of diagonals in matrix, which is equal to the smallest dimension
+  select_length <- matrix |>
+    dim() |>
     min()
 
-  # Build matrix identifying the diagonals
-  select <-
-    c(1:select_length, 1:select_length) %>%
-    matrix(
-      ncol = 2,
-      byrow = FALSE
-    )
+  # Get number of dimensions in a matrix, which is used to define number of matrix columns
+  select_columns <- matrix |>
+    dim() |>
+    length()
 
-  # Filter matrix, return data
-  matrix[select] %>%
-    return()
+  # Build matrix identifying the diagonals to be subsetted
+  select <- rep(1:select_length, times = select_columns) |>
+    matrix(ncol = select_columns, byrow = FALSE)
+
+  # Filter matrix
+  out <- matrix[select]
+
+  # Return data
+  return(out)
 }
 ```
 
-```{r}
+```{webr Ex 4.2.6.5A2}
+#| autorun: True
+# Build test matrices
+x <- list(
+  "3x8" = matrix(1:24, nrow = 3, ncol = 8),
+  "4x6" = matrix(1:24, nrow = 4, ncol = 6),
+  "5x5" = matrix(1:25, nrow = 5, ncol = 5),
+  "6x4" = matrix(1:24, nrow = 6, ncol = 4),
+  "8x3" = matrix(1:24, nrow = 8, ncol = 3),
+  "3x3x3" = array(1:27, dim = c(3, 3, 3))
+)
+
 # Test behaviour
 map(x, \(x) get_matrix_diagonals(x))
 ```
@@ -335,22 +594,25 @@ What does `df[is.na(df)] <- 0` do? How does it work?
 
 It replaces `NA` with 0 in all dataframe cells. It creates a new logical matrix showing the status of all dataframe cells, which can then be used to subset the dataframe. The subset is then modified.
 
-```{r}
-# Function
-is.na.data.frame
-```
 
+```{webr Ex 4.2.6.6A2}
+#| autorun: True
+# Create test data: first 10 rows of airquality dataset
+df <- airquality[1:10, ]
 
-```{r}
-# Test on first 30 rows of airquality dataset
-x <- airquality[1:30, ]
-
-x %>%
+# Print dataset
+message("Original dataset:")
+df |>
   reactable(defaultPageSize = 5)
 
-x[is.na(x)] <- 0
+# Print logical matrix from the subset
+message("Logical matrix from the subset:")
+is.na(df)
 
-x %>%
+# Replace NAs with 0 then print replaced dataset
+message("Replaced dataset:")
+df[is.na(df)] <- 0
+df |>
   reactable(defaultPageSize = 5)
 
 ```
@@ -358,44 +620,59 @@ x %>%
 
 ## Selecting a single element
 
+More details are available in the [Selecting a single element](https://adv-r.hadley.nz/subsetting.html#subset-single) book chapter.
+
 ### Ex. 1
 
 Brainstorm as many ways as possible to extract the third value from the `cyl` variable in the `mtcars` dataset.
 
-```{r}
-data("mtcars")
+```{webr Ex 4.3.5.1Q}
+#| edit: False
+mtcars$cyl |> head()
 ```
 
 #### Answers
 
-
-```{r}
-# Get third value in cyl variable
+```{webr Ex 4.3.5.1A}
+#| autorun: True
+# Get third value in cyl column
 mtcars$cyl[3]
+mtcars[["cyl"]][3]
+mtcars[, "cyl"][3]
 
 # Get value of cyl variable in third row
 mtcars[3, ]$cyl
+mtcars[3, ][, "cyl"]
+mtcars[3, ][["cyl"]]
 
 # Subset directly to variable and row
 mtcars[3, "cyl"]
 ```
-**NB**: There are other code possible to get the same results, but the 3 main strategies are here.
 
 ### Ex. 2
 
 Given a linear model, e.g., `mod <- lm(mpg ~ wt, data = mtcars)`, extract the residual degrees of freedom. Then extract the R squared from the model summary (`summary(mod)`)
 
-```{r}
+```{webr Ex 4.3.5.2Q}
+#| eval: False
 mod <- lm(mpg ~ wt, data = mtcars)
 mod_summary <- summary(mod)
 ```
 
 #### Answers
 
-```{r}
+```{webr Ex 4.3.5.2A}
+#| autorun: True
+# Build test linear model and summary
+mod <- lm(mpg ~ wt, data = mtcars)
+mod_summary <- summary(mod)
+
 # First, profile objects, get appropriate slots.
-tree(mod)
-tree(mod_summary)
+message("Linear model object:")
+lobstr::tree(mod)
+
+message("Linear model summary object:")
+lobstr::tree(mod_summary)
 
 # Get residual df
 mod$df.residual
@@ -407,6 +684,8 @@ mod_summary$r.squared
 
 ## Applications
 
+More details are available in the [Applications](https://adv-r.hadley.nz/subsetting.html#applications) book chapter.
+
 ### Ex. 1
 
 How would you randomly permute the columns of a data frame? (This is an important technique in random forests.) Can you simultaneously permute the rows and columns in one step?
@@ -415,16 +694,20 @@ How would you randomly permute the columns of a data frame? (This is an importan
 
 For both, get a random vector containing column and row indices then subset the dataframe accordingly.
 
-```{r}
+```{webr Ex 4.5.9.1A}
+#| autorun: True
 # Test on mtcars dataset
 ## Permute columns
-mtcars %>%
-  .[, sample(ncol(.))] %>%
+message("Permuted columns:")
+mtcars[, sample(ncol(mtcars))] |>
   reactable(defaultPageSize = 4)
 
 ## Permute columns and rows
-mtcars %>%
-  .[sample(nrow(.)), sample(ncol(.))] %>%
+message("Permuted columns and rows:")
+mtcars[
+  sample(nrow(mtcars)),
+  sample(ncol(mtcars))
+] |>
   reactable(defaultPageSize = 4)
 ```
 
@@ -437,24 +720,24 @@ How would you select a random sample of m rows from a data frame? What if the sa
 - Select sample of `m` rows: Sample like Ex. 1, with an extra argument to `sample()`
 - Select sample of `m` contiguous rows: Randomly select the first row index to sample from, then select rows beginning from that index.
 
-```{r}
+```{webr Ex 4.5.9.2A}
+#| autorun: True
 # Test on mtcars dataset. Let's work with 12 rows.
-m <- 12
+nrow <- 12
 
 ## Select sample of m rows
-mtcars %>%
-  .[sample(nrow(.), size = m), ] %>%
+message("Sample of m rows:")
+mtcars[sample(nrow(mtcars), size = nrow), ] |>
   reactable(defaultPageSize = 4)
 
 ## Select sample of m contiguous rows
-mtcars %>%
-  .[
-    sample((nrow(mtcars) - m + 1), size = 1) %>%
-      seq(from = ., to = . + m - 1),
-  ] %>%
+message("Sample of m contiguous rows:")
+row_start <- sample((nrow(mtcars) - nrow + 1), size = 1)
+row_end <- row_start + nrow - 1
+
+mtcars[row_start:row_end, ] |>
   reactable(defaultPageSize = 4)
 ```
-
 
 ### Ex. 3
 
@@ -465,9 +748,8 @@ How could you put the columns in a data frame in alphabetical order?
 - Get vector depicting order of column names
 - Subset accordingly
 
-```{r}
-mtcars %>%
-  .[, order(colnames(.))] %>%
+```{webr Ex 4.5.9.3A}
+#| autorun: True
+mtcars[, order(colnames(mtcars))] |>
   reactable(defaultPageSize = 4)
 ```
-
