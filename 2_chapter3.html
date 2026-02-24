@@ -333,7 +333,7 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyBE
 <section id="answers-2" class="level4">
 <h4 class="anchored" data-anchor-id="answers-2">Answers</h4>
 <ul>
-<li><p>A list is a vector of references to objects. These objects can be vectors themselves. Lists don’t contain actual “data”. Whereas atomic vectors contain data themselves.</p></li>
+<li><p>A list is a vector of references to objects. These objects can be vectors that contain data. Lists don’t contain actual “data”.</p></li>
 <li><p>A matrix is an atomic vector with a <code>dim</code> attribute. A data frame is a list of atomic vectors. All data in a matrix must be the same type, where each column in a data frame may have a different type.</p></li>
 </ul>
 </section>
@@ -385,6 +385,11 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyBE
 <section id="answers-5" class="level4">
 <h4 class="anchored" data-anchor-id="answers-5">Answers</h4>
 <p>There are many ways to create raw vectors:</p>
+<ul>
+<li>Directly create a vector containing <code>as.raw</code> data.</li>
+<li>Create a vector, then coerce it to raw using <code>as.raw()</code>.</li>
+<li>Create an empty raw vector then fill slots.</li>
+</ul>
 <div class="cell" data-autorun="true">
 <div>
 <div id="webr-7" class="exercise-cell">
@@ -396,13 +401,18 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyBD
 </div>
 </div>
 <p>There are also many ways to create complex vectors:</p>
+<ul>
+<li>Directly create a vector containing complex data.</li>
+<li>Create a vector, then coerce it to complex using <code>as.complex()</code>. However, the data won’t have an imaginary part.</li>
+<li>Create an empty complex vector then fill slots.</li>
+</ul>
 <div class="cell" data-autorun="true">
 <div>
 <div id="webr-8" class="exercise-cell">
 
 </div>
 <script type="webr-8-contents">
-eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyBDcmVhdGUgdmVjdG9yIGNvbnRhaW5pbmcgY29tcGxleCBkYXRhXG54IDwtIGMoMSArIDZpLCAxLjcgKyAzLjJpKVxuXG4jIFNob3cgdmVjdG9yIGFuZCB0eXBlXG5tZXNzYWdlKFwiU2hvd2luZyBjb250ZW50IG9mIGMoMSArIDZpLCAxLjcgKyAzLjJpKVwiKVxueFxudHlwZW9mKHgpXG5cbiMgQ3JlYXRlIHZlY3RvciwgdGhlbiBjb2VyY2UgaXQgdG8gY29tcGxleFxuIyMgTm90ZTogbm8gaW1hZ2luYXJ5IHBhcnQsIGluaXRpYWxseVxueCA8LSBjKDEsIDEuNylcblxuIyMgU2hvdyB2ZWN0b3IgYW5kIHR5cGUgYmVmb3JlIGNvZXJjaW9uXG5tZXNzYWdlKFwiU2hvd2luZyBjb250ZW50IG9mIGMoMSwgMS43KVwiKVxueFxudHlwZW9mKHgpXG5cbnggPC0geCB8PlxuICBhcy5jb21wbGV4KClcblxuIyMgU2hvdyB2ZWN0b3IgYW5kIHR5cGUgYWZ0ZXIgY29lcmNpb25cbm1lc3NhZ2UoXCJTaG93aW5nIHR5cGUgb2YgYXMuY29tcGxleChjKDEsIDEuNykpXCIpXG54XG50eXBlb2YoeClcblxuIyBDcmVhdGUgZW1wdHkgcmF3IHZlY3RvciB0aGVuIGZpbGwgc2xvdHNcbnggPC0gY29tcGxleCgyKVxueFtbMV1dIDwtIDEgKyA2aVxueFtbMl1dIDwtIDEuNyArIDMuMmlcblxuIyMgU2hvdyB2ZWN0b3IgYW5kIHR5cGVcbm1lc3NhZ2UoXCJTaG93aW5nIGNvbnRlbnQgb2YgY29tcGxleCgyKVwiKVxueFxudHlwZW9mKHgpIn0=
+eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyBDcmVhdGUgdmVjdG9yIGNvbnRhaW5pbmcgY29tcGxleCBkYXRhXG54IDwtIGMoMSArIDZpLCAxLjcgKyAzLjJpKVxuXG4jIFNob3cgdmVjdG9yIGFuZCB0eXBlXG5tZXNzYWdlKFwiU2hvd2luZyBjb250ZW50IG9mIGMoMSArIDZpLCAxLjcgKyAzLjJpKVwiKVxueFxudHlwZW9mKHgpXG5cbiMgQ3JlYXRlIHZlY3RvciwgdGhlbiBjb2VyY2UgaXQgdG8gY29tcGxleFxuIyMgTm90ZTogbm8gaW1hZ2luYXJ5IHBhcnQsIGluaXRpYWxseVxueCA8LSBjKDEsIDEuNykgfD5cbiAgYXMuY29tcGxleCgpXG5cbiMjIFNob3cgdmVjdG9yIGFuZCB0eXBlIGFmdGVyIGNvZXJjaW9uXG5tZXNzYWdlKFwiU2hvd2luZyB0eXBlIG9mIGFzLmNvbXBsZXgoYygxLCAxLjcpKVwiKVxueFxudHlwZW9mKHgpXG5cbiMgQ3JlYXRlIGVtcHR5IHJhdyB2ZWN0b3IgdGhlbiBmaWxsIHNsb3RzXG54IDwtIGNvbXBsZXgoMilcbnhbWzFdXSA8LSAxICsgNmlcbnhbWzJdXSA8LSAxLjcgKyAzLjJpXG5cbiMjIFNob3cgdmVjdG9yIGFuZCB0eXBlXG5tZXNzYWdlKFwiU2hvd2luZyBjb250ZW50IG9mIGNvbXBsZXgoMilcIilcbnhcbnR5cGVvZih4KSJ9
 </script>
 </div>
 </div>
@@ -441,14 +451,14 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyBD
 <p>Why is <code>1 == "1"</code> true? Why is <code>-1 &lt; FALSE</code> true? Why is <code>"one" &lt; 2</code> false?</p>
 <section id="answers-7" class="level4">
 <h4 class="anchored" data-anchor-id="answers-7">Answers</h4>
-<p>Because both sides of the argument are coerced (in the order of logical - numeric - character) prior to comparison.</p>
+<p>Because both sides of the argument are coerced (in the order of logical -&gt; numeric -&gt; character) prior to comparison.</p>
 <div class="cell">
 <div>
 <div id="webr-11" class="exercise-cell">
 
 </div>
 <script type="webr-11-contents">
-eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyBGaXJzdCBjb21wYXJpc29uOiBCb3RoIHNpZGVzIGNvZXJjZWQgdG8gY2hhcmFjdGVyLlxuYygxLCBcIjFcIikgfD5cbiAgdHlwZW9mKClcblxuIyBTZWNvbmQgY29tcGFyaXNvbjogQm90aCBzaWRlcyBjb2VyY2VkIHRvIG51bWVyaWNcbmMoLTEsIEZBTFNFKSB8PlxuICB0eXBlb2YoKVxuXG5jKC0xLCBGQUxTRSlcblxuIyBUaGlyZCBjb21wYXJpc29uOiBCb3RoIHNpZGVzIGNvZXJjZWQgdG8gY2hhcmFjdGVyLCBjb21wYXJpc29uIG5vdCBwb3NzaWJsZVxuYyhcIm9uZVwiLCAyKSB8PlxuICB0eXBlb2YoKVxuXG5jKFwib25lXCIsIDIpIn0=
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyBGaXJzdCBjb21wYXJpc29uOiBCb3RoIHNpZGVzIGNvZXJjZWQgdG8gY2hhcmFjdGVyIHByaW9yIHRvIGNvbXBhcmlzb24uXG5jKDEsIFwiMVwiKSB8PlxuICB0eXBlb2YoKVxuXG5tZXNzYWdlKFwiUHJpbnRpbmcgYygxLCBcIjFcIilcIilcbmMoMSwgXCIxXCIpIHw+XG4gIHByaW50KClcblxuIyBTZWNvbmQgY29tcGFyaXNvbjogQm90aCBzaWRlcyBjb2VyY2VkIHRvIG51bWVyaWMgcHJpb3IgdG8gY29tcGFyaXNvbi5cbmMoLTEsIEZBTFNFKSB8PlxuICB0eXBlb2YoKVxuXG5tZXNzYWdlKFwiUHJpbnRpbmcgYygtMSwgRkFMU0UpXCIpXG5jKC0xLCBGQUxTRSkgfD5cbiAgcHJpbnQoKVxuXG4jIFRoaXJkIGNvbXBhcmlzb246IEJvdGggc2lkZXMgY29lcmNlZCB0byBjaGFyYWN0ZXIsIGNvbXBhcmlzb24gbm90IHBvc3NpYmxlXG5jKFwib25lXCIsIDIpIHw+XG4gIHR5cGVvZigpXG5cbm1lc3NhZ2UoXCJQcmludGluZyBjKFwib25lXCIsIDIpXCIpXG5jKFwib25lXCIsIDIpIHw+XG4gIHByaW50KCkifQ==
 </script>
 </div>
 </div>
@@ -459,7 +469,7 @@ eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyBGaXJzdCBjb21wYXJpc29u
 <p>Why is the default missing value, NA, a logical vector? What’s special about logical vectors? (Hint: think about <code>c(FALSE, NA_character_)</code>.)</p>
 <section id="answers-8" class="level4">
 <h4 class="anchored" data-anchor-id="answers-8">Answers</h4>
-<p>NA is automatically set to the strictest type possible, allowing it to be coerced following the rest of the vector. Where coercion is not needed, it defaults to the strictest type of logical.</p>
+<p>Of the multiple types of logicals, NA is automatically set to the strictest type possible, allowing it to be coerced following the rest of the vector. Where coercion is not needed, it defaults to the strictest type of logical.</p>
 <div class="cell" data-autorun="true">
 <div>
 <div id="webr-12" class="exercise-cell">
@@ -479,7 +489,7 @@ eyJhdHRyIjp7ImF1dG9ydW4iOnRydWUsImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoidHlw
 <h4 class="anchored" data-anchor-id="answers-9">Answers</h4>
 <ul>
 <li><code>is.atomic()</code> checks whether the object is an atomic vector (falling into 6 defined classes and direct extensions)</li>
-<li><code>is.numeric())</code> checks whether the data is intepretable as numbers (base type <code>double</code> or <code>integer</code>)</li>
+<li><code>is.numeric()</code> checks whether the data is intepretable as numbers (base type <code>double</code> or <code>integer</code>)</li>
 <li><code>is.vector()</code> checks whether the provided vector (includes list) have no attributes other than names. Since a matrix is a vector with the <code>dim</code> attribute, it would fail this test.</li>
 </ul>
 <div class="cell" data-autorun="true">
