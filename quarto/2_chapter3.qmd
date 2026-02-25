@@ -185,7 +185,7 @@ They don't coerce strings to factors, print more nicely, and has more robust sub
 
 More details are available in the [Atomic vectors](https://adv-r.hadley.nz/vectors-chap.html#atomic-vectors) book chapter.
 
-### Ex. 1
+### Example 1
 
 How do you create raw and complex scalars? (See `?raw` and `?complex`.)
 
@@ -263,7 +263,7 @@ x
 typeof(x)
 ```
 
-### Ex. 2
+### Example 2
 
 Test your knowledge of the vector coercion rules by predicting the output of the following uses of `c()`:
 
@@ -300,7 +300,7 @@ c(TRUE, 1L) |>
   typeof()
 ```
 
-### Ex. 3
+### Example 3
 
 Why is `1 == "1"` true? Why is `-1 < FALSE` true? Why is `"one" < 2` false?
 
@@ -335,7 +335,7 @@ c("one", 2) |>
 
 ```
 
-### Ex. 4
+### Example 4
 
 Why is the default missing value, NA, a logical vector? What’s special about logical vectors? (Hint: think about `c(FALSE, NA_character_)`.)
 
@@ -349,7 +349,7 @@ typeof(NA)
 typeof(NA_integer_)
 ```
 
-### Ex. 5
+### Example 5
 
 Precisely what do `is.atomic()`, `is.numeric()`, and `is.vector()` test for?
 
@@ -388,7 +388,7 @@ list(
 
 More details are available in the [Attributes](https://adv-r.hadley.nz/vectors-chap.html#attributes) book chapter.
 
-### Ex. 1
+### Example 1
 
 How is `setNames()`implemented? How is `unname()` implemented? Read the source code.
 
@@ -408,7 +408,7 @@ setNames
 unname
 ```
 
-### Ex. 2
+### Example 2
 
 What does `dim()` return when applied to a 1-dimensional vector? When might you use `NROW()` or `NCOL()`?
 
@@ -441,7 +441,7 @@ map(x, \(x) c(nrow(x), ncol(x)))
 map(x, \(x) c(NROW(x), NCOL(x)))
 ```
 
-### Ex. 3
+### Example 3
 
 How would you describe the following three objects? What makes them different from 1:5?
 
@@ -474,7 +474,7 @@ map(x, \(x) dim(x))
 map(x, \(x) str(x))
 ```
 
-### Ex. 4
+### Example 4
 
 An early draft used this code to illustrate `structure()`:
 
@@ -508,7 +508,7 @@ print(x)
 
 More details are available in the [S3 atomic vectors](https://adv-r.hadley.nz/vectors-chap.html#s3-atomic-vectors) book chapter.
 
-### Ex. 1
+### Example 1
 
 What sort of object does `table()` return? What is its type? What attributes does it have? How does the dimensionality change as you tabulate more variables?
 
@@ -544,7 +544,7 @@ map(
 )
 ```
 
-### Ex. 2
+### Example 2
 
 What happens to a factor when you modify its levels?
 
@@ -573,7 +573,7 @@ f1
 as.integer(f1)
 ```
 
-### Ex. 3
+### Example 3
 
 What does this code do? How do `f2` and `f3` differ from `f1`?
 
@@ -619,7 +619,7 @@ factors |>
 
 More details are available in the [Lists](https://adv-r.hadley.nz/vectors-chap.html#lists) book chapter.
 
-### Ex. 1
+### Example 1
 
 List all the ways that a list differs from an atomic vector.
 
@@ -628,7 +628,7 @@ List all the ways that a list differs from an atomic vector.
 -   A list object does not itself contain data, only references to data objects.
 -   A list can contain multiple object types, even other lists. This recursiveness makes them different from vectors
 
-### Ex. 2
+### Example 2
 
 Why do you need to use `unlist()` to convert a list to an atomic vector? Why doesn’t `as.vector()` work?
 
@@ -636,7 +636,7 @@ Why do you need to use `unlist()` to convert a list to an atomic vector? Why doe
 
 A list can contain lists or other objects that do not fit inside an atomic vector. `unlist()` has extra logic to handle this, `as.vector()` doesn't.
 
-### Ex. 3
+### Example 3
 
 Compare and contrast `c()` and `unlist()` when combining a date and date-time into a single vector.
 
@@ -684,7 +684,7 @@ typeof(b)
 
 More details are available in the [Data frames and tibbles](https://adv-r.hadley.nz/vectors-chap.html#tibble) book chapter.
 
-### Ex. 1
+### Example 1
 
 Can you have a data frame with zero rows? What about zero columns?
 
@@ -705,7 +705,7 @@ Yes and yes, a dataframe can have no rows and columns. This can also occur via s
 mtcars[0, 0]
 ```
 
-### Ex. 2
+### Example 2
 
 What happens if you attempt to set rownames that are not unique?
 
@@ -720,7 +720,7 @@ x <- mtcars[c(1:4), ]
 rownames(x) <- c("car", "car", "bike", "bicycle")
 ```
 
-### Ex. 3
+### Example 3
 
 If df is a data frame, what can you say about `t(df)`, and `t(t(df))`? Perform some experiments, making sure to try different column types.
 
@@ -786,7 +786,7 @@ typeof(x)
 x
 ```
 
-### Ex. 4
+### Example 4
 
 What does `as.matrix()` do when applied to a data frame with columns of different types? How does it differ from `data.matrix()`?
 
