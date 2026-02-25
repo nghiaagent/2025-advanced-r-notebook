@@ -2,22 +2,19 @@
 format: live-html
 webr:
   packages:
+    - lobstr
     - here
+    - tidyverse
 ---
 
 {{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 # Control flow
 
-```{r setup}
-#| include: FALSE
-
+```{webr setup}
+#| include: False
 # Declare location
 here::i_am("quarto/4_chapter5.qmd")
-
-# Import packages
-library("lobstr")
-library("tidyverse")
 
 # Set seed
 set.seed(67)
@@ -25,30 +22,41 @@ set.seed(67)
 
 ## Quiz
 
+More details are available in the [Control flow Quiz](https://adv-r.hadley.nz/control-flow.html#introduction-4) book chapter.
+
 ### Quiz 1
 
 What is the difference between `if` and `ifelse()`?
 
 #### Answers
 
-The difference between these conditions are:
+The difference between these conditions are:  
+
 - `if()` operates on a single logical value
 - `ifelse()` operates on a vector of logical values. Syntax is also different.
 
-```{r}
-#| eval: false
+```{webr Ex 5.1.1Q}
+#| eval: False
+# To see the help for if()
 ?Control
+
+# To see the help for ifelse()
 ?ifelse
 ```
 
-```{r}
-# if
+```{webr Ex 5.1.1A}
+#| autorun: True
+# Demonstrating if
+message("Demonstrating if")
+
 x <- TRUE
 if (x) {
   print("Hello")
 }
 
 # ifelse
+message("Demonstrating ifelse")
+
 x <- c(TRUE, FALSE, TRUE, TRUE)
 ifelse(
   x,
@@ -61,31 +69,38 @@ ifelse(
 
 In the following code, what will the value of `y` be if `x` is `TRUE`? What if `x` is `FALSE`? What if `x` is `NA`?
 
-```{r}
-#| eval: false
+```{webr Ex 5.1.2Q}
+#| eval: False
 y <- if (x) 3
 ```
 
 #### Answers
 
-Outcome of all cases are:
-- `x <- TRUE`: `y` is assigned.
-- `x <- FALSE`: `y` is NULL
+Outcome of all cases are:  
+
+- `x <- TRUE`: `y` is assigned to be `3`.
+- `x <- FALSE`: `y` is not assigned a value and is `NULL`.
 - `x <- NA`: Error.
 
-```{r}
-#| error: true
-# Let's test
+```{webr Ex 5.1.2A}
+#| autorun: True
+#| error: True
+# Let's test all cases
 ## x is TRUE
 x <- TRUE
+message("`y <- if (x) 3` when x is TRUE")
 y <- if (x) 3
 y
+
 ## x is FALSE
 x <- FALSE
+message("`y <- if (x) 3` when x is FALSE")
 y <- if (x) 3
 y
+
 ## x is NA
 x <- NA
+message("`y <- if (x) 3` when x is NA")
 y <- if (x) 3
 y
 ```
@@ -98,7 +113,8 @@ What does `switch("x", x = , y = 2, z = 3)` return?
 
 `switch` evaluates the matched element or the first following non-missing argument. Since `x` is missing, the next argument `y` is evaluated, yielding `2`.
 
-```{r}
+```{webr Ex 5.1.3A}
+#| autorun: True
 switch("x",
   x = ,
   y = 2,
@@ -108,12 +124,14 @@ switch("x",
 
 ## Choices
 
-### Ex. 1
+More details are available in the [Choices](https://adv-r.hadley.nz/control-flow.html#choices) book chapter.
+
+### Example 1
 
 What type of vector does each of the following calls to `ifelse()` return?
 
-```{r}
-#| eval: false
+```{webr Ex 5.2.4.1Q}
+#| eval: False
 ifelse(TRUE, 1, "no")
 ifelse(FALSE, 1, "no")
 ifelse(NA, 1, "no")
@@ -121,23 +139,32 @@ ifelse(NA, 1, "no")
 
 #### Answers
 
-```{r}
-# Evaluates to the TRUE arg, 1
+- `ifelse(TRUE, 1, "no")` evaluates to the `TRUE` argument, `1`.
+- `ifelse(FALSE, 1, "no")` evaluates to the `FALSE` argument, `"no"`.
+- `ifelse(NA, 1, "no")` evaluates to `NA`.
+
+```{webr Ex 5.2.4.1A}
+#| autorun: True
+# Evaluates to the TRUE arg, "1"
+message("`ifelse(TRUE, 1, \"no\")`")
 ifelse(TRUE, 1, "no")
 
-# Evaluates to the FALSE arg, no
+# Evaluates to the FALSE arg, "no"
+message("`ifelse(FALSE, 1, \"no\")`")
 ifelse(FALSE, 1, "no")
 
-# NA propagates, result is NA
+# NA propagates, result is "NA"
+message("`ifelse(NA, 1, \"no\")`")
 ifelse(NA, 1, "no")
 ```
 
 
-### Ex. 2
+### Example 2
 
 Why does the following code work?
 
-```{r}
+```{webr Ex 5.2.4.2Q}
+#| eval: False
 x <- 1:10
 if (length(x)) {
   "not empty"
@@ -155,12 +182,35 @@ if (length(x)) {
 
 #### Answers
 
+First, let's check the code behaviour.
+
+```{webr Ex 5.2.4.2A1}
+#| autorun: True
+# Checking code behaviour
+# Define function that checks if a vector is empty
+is_empty <- function(x) {
+  if (length(x)) {
+    "not empty"
+  } else {
+    "empty"
+  }
+}
+
+# Test the example cases
+message("Is 1:10 empty?")
+is_empty(1:10)
+
+message("Is numeric() empty?")
+is_empty(numeric())
+```
+
 The code works because:
 
 - For the vector `1:10`, its length is 10 and is equal to `TRUE`.
-- For the vector `numeric()`, its length is 10 and is equal to `FALSE`.
+- For the vector `numeric()`, its length is 0, and 0 is equal to `FALSE`.
 
-```{r}
+```{webr Ex 5.2.4.2A2}
+#| autorun: True
 # Length of x is 10, equal to TRUE
 x <- 1:10
 length(x)
@@ -174,11 +224,14 @@ length(x) == FALSE
 
 ## Loops
 
-### Ex. 1
+More details are available in the [Loops](https://adv-r.hadley.nz/control-flow.html#loops) book chapter.
+
+### Example 1
 
 Why does this code succeed without errors or warnings?
 
-```{r}
+```{webr Ex 5.3.3.1Q}
+#| edit: False
 x <- numeric()
 out <- vector("list", length(x))
 for (i in 1:length(x)) {
@@ -189,60 +242,134 @@ out
 
 #### Answers
 
-This horrorshow works because:
+I will explain this horrorshow line-by-line, starting with the loop elements `x`, `out`, and the iterator `1:length(x)`.  
 
-- `vector()` by default, creates an empty vector. This behaviour is intended.
-- `1:length(x)` is a vector counting down from 1 to 0 (`c(1, 0)`)
+1. `x` is an empty numeric vector with length is 0.
 
-```{r}
-# Example case
-x1 <- vector(
-  mode = "list",
-  length = numeric() %>%
-    length()
-)
+```{webr Ex 5.3.3.1A1}
+#| autorun: True
+x <- numeric()
+message("The value of x is:")
+x
 
-# Default case
-x2 <- vector(
-  mode = "list"
-)
-
-identical(x1, x2)
-
+message("The length of x is:")
+length(x)
 ```
 
-During the first iteration, the following occurs:
+2. `out` is an empty list with the same length as `x` (0).  
 
-- The subsetting of `x` successfully returns `NA` as intended.
-- The `out[1]` list element is successfully set as intended.
-
-```{r}
+```{webr Ex 5.3.3.1A2}
+#| autorun: True
+# Build out
 x <- numeric()
 out <- vector("list", length(x))
 
+# Profile out
+message("The value of out is:")
+out
+
+message("The length of out is:")
+length(out)
+
+message("The structure of out is:")
+str(out)
+
+message("The tree of out is:")
+tree(out)
+```
+
+3. The loop iterator is `1:length(x)` as its iterator. This vector is equivalent to `c(1, 0)`.
+
+```{webr Ex 5.3.3.1A3}
+#| autorun: True
+# Build the iterator being evaluated
+x <- numeric()
+1:length(x)
+
+# Profile the iterator
+message("The value of 1:length(x) is:")
+1:length(x)
+
+message("The tree of 1:length(x) is:")
+tree(1:length(x))
+
+message("Is 1:length(x) equal to c(1, 0)?")
+1:length(x) == c(1, 0)
+```
+
+This is where the code breaks from convention. Usually an iterator counts up, not down. The loop is evaluated twice, the first time with `i = 1` and the second time with `i = 0`.  
+
+1. 1st iteration: With `i = 1`, the first element of the `out` list is assigned with the square of the first element of `x`. Since `x` is empty, this is NA.
+
+```{webr Ex 5.3.3.1A4}
+#| autorun: True
+# Build objects for loop
+x <- numeric()
+out <- vector("list", length(x))
+
+# Perform first iteration of loop manually
 out[1] <- x[1]^2
+
+# Show outcome
+message("The value of out is:")
+out
+
+message("The value of out[[1]] is:")
+out[[1]]
 ```
 
-During the second iteration, the following occurs:
+2. 2nd iteration: With `i = 0`, the 0th element of the `out` list is assigned. This does not change the list.
 
-- The subsetting of `x` returns a zero length vector not containing any data.
-- The subsetting of `out` returns a zero length vector not containing any data.
-- No data accessed or modified.
-
-```{r}
+```{webr Ex 5.3.3.1A5}
+#| autorun: True
+# Build objects for loop
 x <- numeric()
 out <- vector("list", length(x))
 
+# Perform second iteration of loop manually
 out[0] <- x[0]^2
+
+# Show outcome
+message("The value of out is:")
+out
 ```
 
-In summary, all operations behaved as intended by the code and contained no errors. 
+In short, the function above is equivalent to the below:
 
-### Ex. 2
+```{webr Ex 5.3.3.1A6}
+#| autorun: True
+# Create alternative implementation
+x <- numeric()
+out <- vector("list", length(x))
+out[1] <- NA
+
+# Print object
+message("The value of out is:")
+out
+```
+
+In actual loops, this behaviour of a downward-counting iterator is not desired. Use `seq_along()` instead; in this case, it will correctly do nothing because x is length 0.
+
+```{webr Ex 5.3.3.1A7}
+#| autorun: True
+# Create alternative implementation with seq_along
+x <- numeric()
+out <- vector("list", length(x))
+for (i in seq_along(x)) {
+  out[i] <- x[i]^2
+}
+
+# Print object
+message("The value of out is:")
+out
+```
+
+### Example 2
 
 When the following code is evaluated, what can you say about the vector being iterated?
 
-```{r}
+```{webr Ex 5.3.3.2Q}
+#| eval: False
 xs <- c(1, 2, 3)
 for (x in xs) {
   xs <- c(xs, x * 2)
@@ -254,17 +381,20 @@ xs
 
 In every iteration, the calculated value is concatenated with the previous vector and attached to the end. The `for` looping section is evaluated prior to beginning the loop, which ensures that the loop ends in 3 iterations, even though the length of `xs` is increased by the loop. 
 
-```{r}
+```{webr Ex 5.3.3.2A}
+#| autorun: True
 xs <- c(1, 2, 3)
 for (x in xs) {
   xs <- c(xs, x * 2)
+  message(paste0("Loop number ", x))
   print(xs)
 }
 ```
 
-### Ex. 3
+### Example 3
 
-```{r}
+```{webr Ex 5.3.3.3Q}
+#| eval: False
 for (i in 1:3) {
   i <- i * 2
   print(i)
@@ -273,9 +403,19 @@ for (i in 1:3) {
 
 #### Answers
 
-In essence, there are two different `i` variables here:
+There are two different `i` variables here:
 
-- The first `i` is outside of the loop and is responsible for counting the number of iterations (`1, 2, 3`)
+- The first `i` is outside of the loop and acts as the iterator (`1, 2, 3`)
 - The second `i` is inside the loop.
 
 At every iteration, the outer `i` is passed in the loop, doubled, printed, then replaced with the outer `i` when the next iteration begins. The outer `i` is never modified.
+
+
+```{webr Ex 5.3.3.3A}
+#| autorun: True
+for (i in 1:3) {
+  message(paste0("Loop number ", i))
+  i <- i * 2
+  print(i)
+}
+```
